@@ -1,6 +1,10 @@
 ﻿Air-pollution-data-processing
-對於高雄空汙做簡單的資料處理與分析
 
 資料來源
 
+https://taqm.epa.gov.tw/taqm/tw/YearlyDataDownload.aspx
+
+使用107年高屏空品區全年資料
+
 資料處理
+
