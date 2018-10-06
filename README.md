@@ -8,3 +8,4 @@ https://taqm.epa.gov.tw/taqm/tw/YearlyDataDownload.aspx
 
 資料處理
 
+![O3全年走勢圖](/Air-pollution-data-processing/O3.jpg "O3全年走勢圖")
