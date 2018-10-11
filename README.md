@@ -23,7 +23,7 @@
 
 <p><ol>
 <li>每日就診人數</li>
-	日期為106年1月1日到12月31日,ICD代碼為703、995.3的就診病人。
+	日期為106年1月1日到12月31日，ICD代碼為703、995.3的就診病人。
 <li>空氣品質監測資料</li>
 	這裡我們列出感興趣的檢測項目，如下：
 	<ol>
@@ -43,7 +43,9 @@
 
 
 <h2>Statistics Graph</h2>
-![O3全年走勢圖](https://github.com/schifferm/Air-pollution-data-processing/blob/master/O3.png "O3全年走勢圖")
+
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_weeks.png" alt="loess_O3_weeks">
+
 <h2>Loess Regression graph </h2>
 
 
