@@ -48,9 +48,9 @@
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/O3_patient.png" alt="O3_patient">
 <h2>Loess Regression graph </h2>
 
-
-
+<h3>一個禮拜的空氣汙染指標對就診人數的預測</h3>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_weeks.png" alt="loess_O3_weeks">
+<h3>上個禮拜的空氣汙染指標對這個禮拜的就診人數預測</h3>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_lastweek.png" alt="loess_O3_lastweek">
 
 </body>
