@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 </head>
 <body>
 
@@ -22,10 +21,9 @@
 
 >此資料分為
 
-
 <p><ol>
 <li>每日就診人數</li>
-	日期為106年1月1日到12月31日
+	日期為106年1月1日到12月31日,ICD代碼為703、995.3的就診病人。
 <li>空氣品質監測資料</li>
 	這裡我們列出感興趣的檢測項目，如下：
 	<ol>
@@ -40,9 +38,16 @@
 	每個檢測項目都有全天候24小時逐時資料，但還是有少許遺漏值。	
 </ol></p>
 
-<h2>資料處理</h2>
+<h2>Pretreatment</h2>
 
+
+
+<h2>Statistics Graph</h2>
 ![O3全年走勢圖](https://github.com/schifferm/Air-pollution-data-processing/blob/master/O3.png "O3全年走勢圖")
+<h2>Loess Regression graph </h2>
+
+
+
 
 </body>
 </html>

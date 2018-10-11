@@ -28,30 +28,25 @@ loaddata<-function(path = "./",confound=NULL,state=NULL){
 
 ptm <- proc.time()
 
-ld<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("SO2","CO","O3","PM2.5","NO2"))
+all_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("SO2","CO","O3","PM2.5","NO2","PM10","NO"))
 
 proc.time() - ptm
 #   user  system elapsed 
-#1917.29    5.25 2113.14 
+#2119.72    6.27 2260.86
 
 ptm <- proc.time()
 
-allld<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區")
+SO2_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("SO2"))
+CO_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("CO"))
+O3_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("O3"))
+PM2.5_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("PM2.5"))
+NO2_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("NO2"))
+PM10_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("PM10"))
+NO_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("NO"))
 
 proc.time() - ptm
-#   user  system elapsed 
-#1224.58    0.41 1225.44 
-
-ptm <- proc.time()
-
-O_3_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("O3"))
-
-proc.time() - ptm
-#   user  system elapsed 
-#1440.83    6.38 1454.80 
 ##########################################
-
-O3_stat1<-O_3_data[O_3_data$測站 %in% "左營",]
+#3hours
 #################clean.#*x###############################################
 dataclean<-function(odata){
   pattern = "[#*x]"
@@ -71,12 +66,28 @@ dataclean<-function(odata){
 ####################################################################
 ptm <- proc.time()
 
-ld_cleaned<-dataclean(ld)
+SO2_data_cleaned<-dataclean(SO2_data)
+CO_data_cleaned<-dataclean(CO_data)
+O3_data_cleaned<-dataclean(O3_data)
+PM2.5_data_cleaned<-dataclean(PM2.5_data)
+NO2_data_cleaned<-dataclean(NO2_data)
+PM10_data_cleaned<-dataclean(PM10_data)
+NO_data_cleaned<-dataclean(NO_data)
 
 proc.time() - ptm
-# user  system elapsed 
-#48.14    0.18   50.58  
-tmp<-dataclean(O3_stat1)
+# user  system elapsed  
+#86.14    0.27   90.90  
+ptm <- proc.time()
+
+SO2_data_cleaned_stat1<-SO2_data_cleaned[SO2_data_cleaned$X2 %in% "左營",]
+CO_data_cleaned_stat1<-CO_data_cleaned[CO_data_cleaned$X2 %in% "左營",]
+O3_data_cleaned_stat1<-O3_data_cleaned[O3_data_cleaned$X2 %in% "左營",]
+PM2.5_data_cleaned_stat1<-PM2.5_data_cleaned[PM2.5_data_cleaned$X2 %in% "左營",]
+NO2_data_cleaned_stat1<-NO2_data_cleaned[NO2_data_cleaned$X2 %in% "左營",]
+PM10_data_cleaned_stat1<-PM10_data_cleaned[PM10_data_cleaned$X2 %in% "左營",]
+NO_data_cleaned_stat1<-NO_data_cleaned[NO_data_cleaned$X2 %in% "左營",]
+
+proc.time() - ptm
 
 ##creat.date#####
 date_2017 = data.frame(seq(from = as.Date("2017-01-01"),to = as.Date("2017-12-31"),by = "day"))
@@ -90,75 +101,349 @@ outpatient_csv[,1]<-as.Date(outpatient_csv[,1])
 colnames(date_2017)<-colnames(outpatient_csv)[1]
 
 outpatient_alldate<-merge(date_2017, outpatient_csv, by.x="date",all.x = TRUE)
+write.csv(outpatient_alldate,"outpatient_alldate.csv",fileEncoding = "utf-8")
 ##########Interested information##########
-max_O3<-data.frame(apply(tmp[4:27],1,max))
-min_O3<-data.frame(apply(tmp[4:27],1,min))
-mean_O3<-data.frame(apply(tmp[4:27],1,mean))
-med_O3<-data.frame(apply(tmp[4:27],1,median))
-O3_obs<-cbind(outpatient_alldate$date,
-              max_O3,mean_O3,med_O3,min_O3,outpatient_alldate$`708&995.3`)
-colnames(O3_obs)<-c("date","MaxO3","MeanO3","MedO3","MinO3","#people")
-O3_obs$panel<-"a"
-outpatient_alldate$panel<-"b"
-O3_all<-rbind(O3_obs,outpatient_alldate)
+tmp<-SO2_data_cleaned_stat1
+function(x){max(x,na.rm=TRUE)}
+databind<-function(tmp){
+  max<-data.frame(apply(tmp[4:27],1,function(x){max(x,na.rm=TRUE)}))
+  min<-data.frame(apply(tmp[4:27],1,function(x){min(x,na.rm=TRUE)}))
+  mean<-data.frame(apply(tmp[4:27],1,function(x){mean(x,na.rm=TRUE)}))
+  med<-data.frame(apply(tmp[4:27],1,function(x){median(x,na.rm=TRUE)}))
+  obs<-cbind(outpatient_alldate$date,
+             max,mean,med,min,outpatient_alldate$`708&995.3`)
+  colnames(obs)<-c("date","Max","Mean","Med","Min","#people")
+  return(obs)
+  }
+#######################################################
+ptm <- proc.time()
 
+SO2_databind<-databind(SO2_data_cleaned_stat1)
+CO_databind<-databind(CO_data_cleaned_stat1)
+O3_databind<-databind(O3_data_cleaned_stat1)
+PM2.5_databind<-databind(PM2.5_data_cleaned_stat1)
+NO2_databind<-databind(NO2_data_cleaned_stat1)
+PM10_databind<-databind(PM10_data_cleaned_stat1)
+NO_databind<-databind(NO_data_cleaned_stat1)
+
+proc.time() - ptm
+#user  system elapsed 
+#0.39    0.00    0.40 
+
+#######################################################
 par(mfrow = c(1, 2))
-p2<-plot(x=tmp$as.Date.res_frame...1..,y=max_O3$apply.tmp.4.27...1..max.,type = "l",col="#ff6666",
-         main = "全年臭氧趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
+p2<-plot(x=SO2_databind$date,y=SO2_databind$Max,type = "l",col="#ff6666",
+         main = "全年SO2趨勢", xlab ="date", ylab = "SO2",ylim=c(0,40))
 legend("topright", cex=0.5,                             
        pch = "l",                                
        col = c("#ff6666"), 
        legend = c("max_O3")
 )
-abline(125,0,                          
+abline(35,0,                          
        lwd=1,col="#ff8c1a")
-p1<-plot(x=outpatient_alldate$date,y=outpatient_alldate$`708&995.3`,type = "l",col="#333333",
+p1<-plot(x=SO2_databind$date,y=SO2_databind$`#people`,type = "l",col="#333333",
          main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
-
+#SO2
 ##########################################
 par(mfrow = c(1, 2))
-p2<-plot(x=tmp$as.Date.res_frame...1..,y=max_O3$apply.tmp.4.27...1..max.,type = "l",col="#ff6666",
-     main = "全年臭氧趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
+p2<-plot(x=SO2_databind$date,SO2_databind$Max,type = "l",col="#ff6666",
+     main = "全年SO2趨勢", xlab ="date", ylab = "SO2",ylim=c(0,40))
 legend("topright", cex=0.5,                             
        pch = "l",                                
        col = c("#ff6666","#99ff66","#6699ff","#ffd633"), 
-       legend = c("max_O3", "min_O3", "mean_O3","med_O3")
+       legend = c("max", "min", "mean","med")
+)
+abline(35,0,                          
+       lwd=1,col="#ff8c1a")
+par(new=T)
+p3<-plot(x=SO2_databind$date,y=SO2_databind$Min,type = "l",col="#99ff66",
+     main = "全年SO2趨勢", xlab ="date", ylab = "SO2",ylim=c(0,40))
+par(new=T)
+p4<-plot(x=SO2_databind$date,y=SO2_databind$Mean,type = "l",col="#6699ff",
+     main = "全年SO2趨勢", xlab ="date", ylab = "SO2",ylim=c(0,40))
+par(new=T)
+p5<-plot(x=SO2_databind$date,y=SO2_databind$Med,type = "l",col="#ffd633",
+     main = "全年SO2趨勢", xlab ="date", ylab = "SO2",ylim=c(0,40))
+
+p1<-plot(x=SO2_databind$date,y=SO2_databind$`#people`,type = "l",col="#333333",
+         main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+##########################################
+par(mfrow = c(2, 2))
+plot(x=SO2_databind$Max,y=SO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "SO2_Max V.S. 就診人數", ylab ="就診人數", xlab = "SO2")
+abline(lm(`#people`~Max, SO2_databind),                          
+       lwd=1,col="red")
+plot(x=SO2_databind$Min,y=SO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "SO2_Min V.S. 就診人數", ylab ="就診人數", xlab = "SO2")
+abline(lm(`#people`~Min, SO2_databind),                          
+       lwd=1,col="red")
+plot(x=SO2_databind$Med,y=SO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "SO2_Med V.S. 就診人數", ylab ="就診人數", xlab = "SO2")
+abline(lm(`#people`~Med, SO2_databind),                          
+       lwd=1,col="red")
+plot(x=SO2_databind$Mean,y=SO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "SO2_Mean V.S. 就診人數", ylab ="就診人數", xlab = "SO2")
+abline(lm(`#people`~Mean, SO2_databind),                          
+       lwd=1,col="red")
+#############################################################
+#CO
+##########################################
+par(mfrow = c(1, 2))
+p2<-plot(x=CO_databind$date,CO_databind$Max,type = "l",col="#ff6666",
+         main = "全年CO趨勢", xlab ="date", ylab = "CO",ylim=c(0,5))
+legend("topright", cex=0.5,                             
+       pch = "l",                                
+       col = c("#ff6666","#99ff66","#6699ff","#ffd633"), 
+       legend = c("max", "min", "mean","med")
+)
+abline(4.4,0,                          
+       lwd=1,col="#ff8c1a")
+par(new=T)
+p3<-plot(x=CO_databind$date,y=CO_databind$Min,type = "l",col="#99ff66",
+         main = "全年CO趨勢", xlab ="date", ylab = "CO",ylim=c(0,5))
+par(new=T)
+p4<-plot(x=CO_databind$date,y=CO_databind$Mean,type = "l",col="#6699ff",
+         main = "全年CO趨勢", xlab ="date", ylab = "CO",ylim=c(0,5))
+par(new=T)
+p5<-plot(x=CO_databind$date,y=CO_databind$Med,type = "l",col="#ffd633",
+         main = "全年CO趨勢", xlab ="date", ylab = "CO",ylim=c(0,5))
+
+p1<-plot(x=CO_databind$date,y=CO_databind$`#people`,type = "l",col="#333333",
+         main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+##########################################
+par(mfrow = c(2, 2))
+plot(x=CO_databind$Max,y=CO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "CO_Max V.S. 就診人數", ylab ="就診人數", xlab = "CO")
+abline(lm(`#people`~Max, CO_databind),                          
+       lwd=1,col="red")
+plot(x=CO_databind$Min,y=CO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "CO_Min V.S. 就診人數", ylab ="就診人數", xlab = "CO")
+abline(lm(`#people`~Min, CO_databind),                          
+       lwd=1,col="red")
+plot(x=CO_databind$Med,y=CO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "CO_Med V.S. 就診人數", ylab ="就診人數", xlab = "CO")
+abline(lm(`#people`~Med, CO_databind),                          
+       lwd=1,col="red")
+plot(x=CO_databind$Mean,y=CO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "CO_Mean V.S. 就診人數", ylab ="就診人數", xlab = "CO")
+abline(lm(`#people`~Mean, CO_databind),                          
+       lwd=1,col="red")
+#############################################################
+
+#O3
+par(mfrow = c(1, 2))
+p2<-plot(x=O3_databind$date,O3_databind$Max,type = "l",col="#ff6666",
+         main = "全年O3趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
+legend("top", cex=0.5,                             
+       pch = "l",                                
+       col = c("#ff6666","#99ff66","#6699ff","#ffd633"), 
+       legend = c("max", "min", "mean","med")
 )
 abline(125,0,                          
        lwd=1,col="#ff8c1a")
 par(new=T)
-p3<-plot(x=tmp$as.Date.res_frame...1..,y=min_O3$apply.tmp.4.27...1..min.,type = "l",col="#99ff66",
-     main = "全年臭氧趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
+p3<-plot(x=O3_databind$date,y=O3_databind$Min,type = "l",col="#99ff66",
+         main = "全年O3趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
 par(new=T)
-p4<-plot(x=tmp$as.Date.res_frame...1..,y=mean_O3$apply.tmp.4.27...1..mean.,type = "l",col="#6699ff",
-     main = "全年臭氧趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
+p4<-plot(x=O3_databind$date,y=O3_databind$Mean,type = "l",col="#6699ff",
+         main = "全年O3趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
 par(new=T)
-p5<-plot(x=tmp$as.Date.res_frame...1..,y=med_O3$apply.tmp.4.27...1..median.,type = "l",col="#ffd633",
-     main = "全年臭氧趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
+p5<-plot(x=O3_databind$date,y=O3_databind$Med,type = "l",col="#ffd633",
+         main = "全年O3趨勢", xlab ="date", ylab = "O3",ylim=c(0,150))
 
-p1<-plot(x=outpatient_alldate$date,y=outpatient_alldate$`708&995.3`,type = "l",col="#333333",
+p1<-plot(x=O3_databind$date,y=O3_databind$`#people`,type = "l",col="#333333",
          main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
 ##########################################
 par(mfrow = c(2, 2))
-plot(x=O3_obs$MaxO3,y=O3_obs$`#people`,type = "p",col="#1a53ff",pch=20,
-     main = "MaxO3 V.S. 就診人數", ylab ="就診人數", xlab = "O3")
-abline(lm(`#people`~MaxO3, O3_obs),                          
+plot(x=O3_databind$Max,y=O3_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "O3_Max V.S. 就診人數", ylab ="就診人數", xlab = "O3")
+abline(lm(`#people`~Max, O3_databind),                          
        lwd=1,col="red")
-plot(x=O3_obs$MinO3,y=O3_obs$`#people`,type = "p",col="#1a53ff",pch=20,
-     main = "MinO3 V.S. 就診人數", ylab ="就診人數", xlab = "O3")
-abline(lm(`#people`~MinO3, O3_obs),                          
+plot(x=O3_databind$Min,y=O3_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "O3_Min V.S. 就診人數", ylab ="就診人數", xlab = "O3")
+abline(lm(`#people`~Min, O3_databind),                          
        lwd=1,col="red")
-plot(x=O3_obs$MedO3,y=O3_obs$`#people`,type = "p",col="#1a53ff",pch=20,
-     main = "MedO3 V.S. 就診人數", ylab ="就診人數", xlab = "O3")
-abline(lm(`#people`~MedO3, O3_obs),                          
+plot(x=O3_databind$Med,y=O3_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "O3_Med V.S. 就診人數", ylab ="就診人數", xlab = "O3")
+abline(lm(`#people`~Med, O3_databind),                          
        lwd=1,col="red")
-plot(x=O3_obs$MeanO3,y=O3_obs$`#people`,type = "p",col="#1a53ff",pch=20,
-     main = "MeanO3 V.S. 就診人數", ylab ="就診人數", xlab = "O3")
-abline(lm(`#people`~MeanO3, O3_obs),                          
+plot(x=O3_databind$Mean,y=O3_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "O3_Mean V.S. 就診人數", ylab ="就診人數", xlab = "O3")
+abline(lm(`#people`~Mean, O3_databind),                          
        lwd=1,col="red")
-library(ggplot2)
-par(mfrow = c(1, 1))
-plot(x=O3_obs$MaxO3,y=O3_obs$`#people`,type = "p",col="#1a53ff",pch=20,
-     main = "MaxO3 V.S. 就診人數", ylab ="就診人數", xlab = "O3")
-abline(lm(`#people`~MaxO3, O3_obs),                          
+#############################################################
+#PM2.5
+par(mfrow = c(1, 2))
+p2<-plot(x=PM2.5_databind$date,PM2.5_databind$Max,type = "l",col="#ff6666",
+         main = "全年PM2.5趨勢", xlab ="date", ylab = "PM2.5",ylim=c(0,100))
+legend("top", cex=0.5,                             
+       pch = "l",                                
+       col = c("#ff6666","#99ff66","#6699ff","#ffd633"), 
+       legend = c("max", "min", "mean","med")
+)
+abline(35.5,0,                          
+       lwd=1,col="#ff8c1a")
+abline(54.5,0,                          
+       lwd=1,col="red")
+par(new=T)
+p3<-plot(x=PM2.5_databind$date,y=PM2.5_databind$Min,type = "l",col="#99ff66",
+         main = "全年PM2.5趨勢", xlab ="date", ylab = "PM2.5",ylim=c(0,100))
+par(new=T)
+p4<-plot(x=PM2.5_databind$date,y=PM2.5_databind$Mean,type = "l",col="#6699ff",
+         main = "全年PM2.5趨勢", xlab ="date", ylab = "PM2.5",ylim=c(0,100))
+par(new=T)
+p5<-plot(x=PM2.5_databind$date,y=PM2.5_databind$Med,type = "l",col="#ffd633",
+         main = "全年PM2.5趨勢", xlab ="date", ylab = "PM2.5",ylim=c(0,100))
+
+p1<-plot(x=PM2.5_databind$date,y=PM2.5_databind$`#people`,type = "l",col="#333333",
+         main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+##########################################
+par(mfrow = c(2, 2))
+plot(x=PM2.5_databind$Max,y=PM2.5_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM2.5_Max V.S. 就診人數", ylab ="就診人數", xlab = "PM2.5")
+abline(lm(`#people`~Max, PM2.5_databind),                          
+       lwd=1,col="red")
+plot(x=PM2.5_databind$Min,y=PM2.5_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM2.5_Min V.S. 就診人數", ylab ="就診人數", xlab = "PM2.5")
+abline(lm(`#people`~Min, PM2.5_databind),                          
+       lwd=1,col="red")
+plot(x=PM2.5_databind$Med,y=PM2.5_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM2.5_Med V.S. 就診人數", ylab ="就診人數", xlab = "PM2.5")
+abline(lm(`#people`~Med, PM2.5_databind),                          
+       lwd=1,col="red")
+plot(x=PM2.5_databind$Mean,y=PM2.5_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM2.5_Mean V.S. 就診人數", ylab ="就診人數", xlab = "PM2.5")
+abline(lm(`#people`~Mean, PM2.5_databind),                          
+       lwd=1,col="red")
+#############################################################
+
+#NO2
+par(mfrow = c(1, 2))
+p2<-plot(x=NO2_databind$date,NO2_databind$Max,type = "l",col="#ff6666",
+         main = "全年NO2趨勢", xlab ="date", ylab = "NO2",ylim=c(0,70))
+legend("top", cex=0.5,                             
+       pch = "l",                                
+       col = c("#ff6666","#99ff66","#6699ff","#ffd633"), 
+       legend = c("max", "min", "mean","med")
+)
+abline(54,0,                          
+       lwd=1,col="#ff8c1a")
+par(new=T)
+p3<-plot(x=NO2_databind$date,y=NO2_databind$Min,type = "l",col="#99ff66",
+         main = "全年NO2趨勢", xlab ="date", ylab = "NO2",ylim=c(0,70))
+par(new=T)
+p4<-plot(x=NO2_databind$date,y=NO2_databind$Mean,type = "l",col="#6699ff",
+         main = "全年NO2趨勢", xlab ="date", ylab = "NO2",ylim=c(0,70))
+par(new=T)
+p5<-plot(x=NO2_databind$date,y=NO2_databind$Med,type = "l",col="#ffd633",
+         main = "全年NO2趨勢", xlab ="date", ylab = "NO2",ylim=c(0,70))
+
+p1<-plot(x=NO2_databind$date,y=NO2_databind$`#people`,type = "l",col="#333333",
+         main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+##########################################
+par(mfrow = c(2, 2))
+plot(x=NO2_databind$Max,y=NO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO2_Max V.S. 就診人數", ylab ="就診人數", xlab = "NO2")
+abline(lm(`#people`~Max, NO2_databind),                          
+       lwd=1,col="red")
+plot(x=NO2_databind$Min,y=NO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO2_Min V.S. 就診人數", ylab ="就診人數", xlab = "NO2")
+abline(lm(`#people`~Min, NO2_databind),                          
+       lwd=1,col="red")
+plot(x=NO2_databind$Med,y=NO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO2_Med V.S. 就診人數", ylab ="就診人數", xlab = "NO2")
+abline(lm(`#people`~Med, NO2_databind),                          
+       lwd=1,col="red")
+plot(x=NO2_databind$Mean,y=NO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO2_Mean V.S. 就診人數", ylab ="就診人數", xlab = "NO2")
+abline(lm(`#people`~Mean, NO2_databind),                          
+       lwd=1,col="red")
+#######################################################
+#PM10
+par(mfrow = c(1, 2))
+p2<-plot(x=PM10_databind$date,PM10_databind$Max,type = "l",col="#ff6666",
+         main = "全年PM10趨勢", xlab ="date", ylab = "PM10",ylim=c(0,300))
+legend("top", cex=0.5,                             
+       pch = "l",                                
+       col = c("#ff6666","#99ff66","#6699ff","#ffd633"), 
+       legend = c("max", "min", "mean","med")
+)
+abline(255,0,                          
+       lwd=1,col="#800000")
+abline(125,0,                          
+       lwd=1,col="red")
+abline(55,0,                          
+       lwd=1,col="#ff8c1a")
+par(new=T)
+p3<-plot(x=PM10_databind$date,y=PM10_databind$Min,type = "l",col="#99ff66",
+         main = "全年PM10趨勢", xlab ="date", ylab = "PM10",ylim=c(0,300))
+par(new=T)
+p4<-plot(x=PM10_databind$date,y=PM10_databind$Mean,type = "l",col="#6699ff",
+         main = "全年PM10趨勢", xlab ="date", ylab = "PM10",ylim=c(0,300))
+par(new=T)
+p5<-plot(x=PM10_databind$date,y=PM10_databind$Med,type = "l",col="#ffd633",
+         main = "全年PM10趨勢", xlab ="date", ylab = "PM10",ylim=c(0,300))
+
+p1<-plot(x=PM10_databind$date,y=PM10_databind$`#people`,type = "l",col="#333333",
+         main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+##########################################
+par(mfrow = c(2, 2))
+plot(x=PM10_databind$Max,y=PM10_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM10_Max V.S. 就診人數", ylab ="就診人數", xlab = "PM10")
+abline(lm(`#people`~Max, PM10_databind),                          
+       lwd=1,col="red")
+plot(x=PM10_databind$Min,y=PM10_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM10_Min V.S. 就診人數", ylab ="就診人數", xlab = "PM10")
+abline(lm(`#people`~Min, PM10_databind),                          
+       lwd=1,col="red")
+plot(x=PM10_databind$Med,y=PM10_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM10_Med V.S. 就診人數", ylab ="就診人數", xlab = "PM10")
+abline(lm(`#people`~Med, PM10_databind),                          
+       lwd=1,col="red")
+plot(x=PM10_databind$Mean,y=PM10_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "PM10_Mean V.S. 就診人數", ylab ="就診人數", xlab = "PM10")
+abline(lm(`#people`~Mean, PM10_databind),                          
+       lwd=1,col="red")
+#################################################
+#NO
+##########################################
+par(mfrow = c(1, 2))
+p2<-plot(x=NO_databind$date,NO_databind$Max,type = "l",col="#ff6666",
+         main = "全年NO趨勢", xlab ="date", ylab = "NO",ylim=c(0,70))
+legend("topright", cex=0.5,                             
+       pch = "l",                                
+       col = c("#ff6666","#99ff66","#6699ff","#ffd633"), 
+       legend = c("max", "min", "mean","med")
+)
+abline(55,0,                          
+       lwd=1,col="#ff8c1a")
+par(new=T)
+p3<-plot(x=NO_databind$date,y=NO_databind$Min,type = "l",col="#99ff66",
+         main = "全年NO趨勢", xlab ="date", ylab = "NO",ylim=c(0,70))
+par(new=T)
+p4<-plot(x=NO_databind$date,y=NO_databind$Mean,type = "l",col="#6699ff",
+         main = "全年NO趨勢", xlab ="date", ylab = "NO",ylim=c(0,70))
+par(new=T)
+p5<-plot(x=NO_databind$date,y=NO_databind$Med,type = "l",col="#ffd633",
+         main = "全年NO趨勢", xlab ="date", ylab = "NO",ylim=c(0,70))
+
+p1<-plot(x=NO_databind$date,y=NO_databind$`#people`,type = "l",col="#333333",
+         main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+##########################################
+par(mfrow = c(2, 2))
+plot(x=NO_databind$Max,y=NO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO_Max V.S. 就診人數", ylab ="就診人數", xlab = "NO")
+abline(lm(`#people`~Max, NO_databind),                          
+       lwd=1,col="red")
+plot(x=NO_databind$Min,y=NO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO_Min V.S. 就診人數", ylab ="就診人數", xlab = "NO")
+abline(lm(`#people`~Min, NO_databind),                          
+       lwd=1,col="red")
+plot(x=NO_databind$Med,y=NO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO_Med V.S. 就診人數", ylab ="就診人數", xlab = "NO")
+abline(lm(`#people`~Med, NO_databind),                          
+       lwd=1,col="red")
+plot(x=NO_databind$Mean,y=NO_databind$`#people`,type = "p",col="#1a53ff",pch=20,
+     main = "NO_Mean V.S. 就診人數", ylab ="就診人數", xlab = "NO")
+abline(lm(`#people`~Mean, NO_databind),                          
        lwd=1,col="red")
