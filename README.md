@@ -44,12 +44,14 @@
 
 <h2>Statistics Graph</h2>
 
-<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_weeks.png" alt="loess_O3_weeks">
-
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/O3_date.png" alt="O3_date">
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/O3_patient.png" alt="O3_patient">
 <h2>Loess Regression graph </h2>
 
 
 
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_weeks.png" alt="loess_O3_weeks">
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_lastweek.png" alt="loess_O3_lastweek">
 
 </body>
 </html>
