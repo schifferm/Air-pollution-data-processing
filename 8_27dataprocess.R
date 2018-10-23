@@ -26,11 +26,11 @@ loaddata<-function(path = "./",confound=NULL,state=NULL){
 }
 ############################################################################
 
-ptm <- proc.time()
-
-all_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("SO2","CO","O3","PM2.5","NO2","PM10","NO"))
-
-proc.time() - ptm
+# ptm <- proc.time()
+# 
+# all_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("SO2","CO","O3","PM2.5","NO2","PM10","NO"))
+# 
+# proc.time() - ptm
 #   user  system elapsed 
 #2119.72    6.27 2260.86
 
@@ -47,6 +47,7 @@ NO_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("
 proc.time() - ptm
 ##########################################
 #3hours
+ifelse(!(1<0),0,5)
 #################clean.#*x###############################################
 dataclean<-function(odata){
   pattern = "[#*x]"
@@ -75,8 +76,11 @@ PM10_data_cleaned<-dataclean(PM10_data)
 NO_data_cleaned<-dataclean(NO_data)
 
 proc.time() - ptm
+
 # user  system elapsed  
-#86.14    0.27   90.90  
+#86.14    0.27   90.90 
+
+
 ptm <- proc.time()
 
 SO2_data_cleaned_stat1<-SO2_data_cleaned[SO2_data_cleaned$X2 %in% "左營",]

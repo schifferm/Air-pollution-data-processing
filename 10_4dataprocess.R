@@ -36,7 +36,6 @@ NO_weeks<-trans.weeks(NO_databind)
 
 ########################################################
 # load data with SO2_weeks
-SO2_weeks$index <- 1:nrow(SO2_weeks)  # create index variable
 # retail weeks for better graphical understanding
 SO2_loessMod25 <- loess(patient ~ Max, data=SO2_weeks, span=0.25) # 25% smoothing span
 SO2_loessMod50 <- loess(patient ~ Max, data=SO2_weeks, span=0.50) # 50% smoothing span
@@ -63,11 +62,9 @@ loess.plot<-function(data,x){
   # retail weeks for better graphical understanding
  loessMod25 <- loess(patient ~ x, data=data, span=0.25) # 25% smoothing span
  loessMod50 <- loess(patient ~ x, data=data, span=0.50) # 50% smoothing span
-  
   # get smoothed output
  smoothed25 <- predict(loessMod25) 
  smoothed50 <- predict(loessMod50) 
-  
   # Plot it
   par(mfrow = c(1, 1))
   plot(data$patient, x=data$week, type="l", main="Loess Smoothing and Prediction", xlab="weeks", ylab="patient",col="red")
@@ -86,7 +83,7 @@ loess.plot(NO_weeks,Max)
 loess.plot(O3_weeks,Max)
 loess.plot(PM10_weeks,Max)
 loess.plot(PM2.5_weeks,Max)
-##########################################
+#############################
 
 trans.lastweek<-function(data){
   data$week<-rep(1:53, each = 7,len = 365)
@@ -110,7 +107,7 @@ PM10_lastweek<-trans.lastweek(PM10_databind)
 NO_lastweek<-trans.lastweek(NO_databind)
 
 #LASTWEEK
-loess.plot(SO2_lastweek,Max)
+loess.plot(SO2_lastweek,week)
 loess.plot(CO_lastweek,Max)
 loess.plot(NO2_lastweek,Max)
 loess.plot(NO_lastweek,Max)
@@ -118,11 +115,6 @@ loess.plot(O3_lastweek,Max)
 loess.plot(PM10_lastweek,Max)
 loess.plot(PM2.5_lastweek,Max)
 
-
-
-
-
-SO2_lastweek$index <- 1:nrow(SO2_lastweek)  # create index variable
 # retail weeks for better graphical understanding
 loessMod10 <- loess(patient ~ Max, data=SO2_lastweek, span=0.10) # 10% smoothing span
 loessMod25 <- loess(patient ~ Max, data=SO2_lastweek, span=0.25) # 25% smoothing span
@@ -135,8 +127,8 @@ smoothed50 <- predict(loessMod50)
 
 # Plot it
 par(mfrow = c(1, 1))
-plot(SO2_lastweek$patient, x=SO2_lastweek$week, type="l", main="Loess Smoothing and Prediction", xlab="weeks", ylab="SO2")
-lines(smoothed10, x=SO2_lastweek$week, col="red")
+plot(SO2_lastweek$patient, x=SO2_lastweek$Max, type="p", main="Loess Smoothing and Prediction", xlab="so2", ylab="patient")
+lines(smoothed10, x=SO2_lastweek$Max, col="red")
 lines(smoothed25, x=SO2_lastweek$week, col="green")
 lines(smoothed50, x=SO2_lastweek$week, col="blue")
 
