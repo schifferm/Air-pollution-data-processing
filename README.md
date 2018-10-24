@@ -60,11 +60,11 @@
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_PM2.5_weeks.png" alt="loess_PM2.5_weeks">
 <h4>上個禮拜的空氣汙染指標對這個禮拜的就診人數預測(含假日)</h4>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_PM2.5_lastweek.png" alt="loess_PM2.5_lastweek">
-<h2>Loess Graph</h2>
+<h2>Loess Graph(不含假日 當天)</h2>
 <h3>O<sub>3</sub></h3>
-<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/nonegative/O3_max_loess.png" alt="O3_max_loess">
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/nonegative/O3_max_loess&patient_line.png" alt="O3_max_loess&patient_line">
 <h3>PM<sub>2.5</sub></h3>
-<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/nonegative/PM2.5_max_loess.png" alt="PM2.5_max_loess">
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/nonegative/PM2.5_max_loess&patient_line.png" alt="PM2.5_max_loess&patient_line">
 
 </body>
 </html>
