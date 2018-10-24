@@ -43,23 +43,28 @@
 <p>to be updated</p>
 
 <h2>Statistics Graph</h2>
-<h3>O3</h3>
+<h3>O<sub>3</sub></h3>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/O3_date.png" alt="O3_date">
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/O3_patient.png" alt="O3_patient">
 <h3>PM2.5</h3>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/PM2.5_date.png" alt="PM2.5_date">
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/PM2.5_patient.png" alt="PM2.5_patient">
 <h2>Loess Regression graph </h2>
-<h3>O3</h3>
-<h4>一個禮拜的空氣汙染指標對就診人數的預測</h4>
+<h3>O<sub>3</sub></h3>
+<h4>一個禮拜的空氣汙染指標對就診人數的預測(含假日)</h4>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_weeks.png" alt="loess_O3_weeks">
-<h4>上個禮拜的空氣汙染指標對這個禮拜的就診人數預測</h4>
+<h4>上個禮拜的空氣汙染指標對這個禮拜的就診人數預測(含假日)</h4>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_O3_lastweek.png" alt="loess_O3_lastweek">
-<h3>PM2.5</h3>
-<h4>一個禮拜的空氣汙染指標對就診人數的預測</h4>
+<h3>PM<sub>2.5</sub></h3>
+<h4>一個禮拜的空氣汙染指標對就診人數的預測(含假日)</h4>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_PM2.5_weeks.png" alt="loess_PM2.5_weeks">
-<h4>上個禮拜的空氣汙染指標對這個禮拜的就診人數預測</h4>
+<h4>上個禮拜的空氣汙染指標對這個禮拜的就診人數預測(含假日)</h4>
 <img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/loess_PM2.5_lastweek.png" alt="loess_PM2.5_lastweek">
+<h2>Loess Graph</h2>
+<h3>O<sub>3</sub></h3>
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/nonegative/O3_max_loess.png" alt="O3_max_loess">
+<h3>PM<sub>2.5</sub></h3>
+<img src="https://github.com/schifferm/Air-pollution-data-processing/blob/master/nonegative/PM2.5_max_loess.png" alt="PM2.5_max_loess">
 
 </body>
 </html>
