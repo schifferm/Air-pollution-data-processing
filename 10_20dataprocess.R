@@ -57,20 +57,20 @@ loess.plot<-function(data,x,title="Loess Smoothing",xlab){
   attach(data)
   data$index <- 1:nrow(data)  # create index variable
   # retail weeks for better graphical understanding
-  loessMod25 <- loess(`#people` ~ index, data=data, span=0.25) # 25% smoothing span
-  loessMod50 <- loess(`#people` ~ index, data=data, span=0.50) # 50% smoothing span
+  loessMod25 <- loess(`#people` ~ x, data=data, span=0.25) # 25% smoothing span
+  loessMod50 <- loess(`#people` ~ x, data=data, span=0.50) # 50% smoothing span
   # get smoothed output
   smoothed25 <- predict(loessMod25) 
   smoothed50 <- predict(loessMod50) 
   # Plot it
-  plot(data$`#people`, x=data$Max, type="p",pch=20, main=title,xlab=xlab ,ylab="patient",col="#66b3ff")
+  plot(data$`#people`, x=data$date, type="l",pch=20, main=title,xlab=xlab ,ylab="patient",col="#66b3ff")
   legend("topright", cex=0.7,                             
          pch = "l",                                
          col = c("#66b3ff","green","red"), 
          legend = c("true patient", "span=0.25", "span=0.5")
   )
-  lines(smoothed25, x=data$Max, col="green")
-  lines(smoothed50, x=data$Max, col="red")
+  lines(smoothed25, x=data$date, col="green")
+  lines(smoothed50, x=data$date, col="red")
 }
 ########################################
 par(mfrow = c(1,1))
