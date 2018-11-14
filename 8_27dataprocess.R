@@ -1,9 +1,32 @@
 #E:/碩二上/空汙/106年 高屏空品區
 library(xlsx)
+library(data.table)
 setwd("E:/碩二上/空汙/106年 高屏空品區")
 path<-("E:/碩二上/空汙/106年 高屏空品區")
-
+a<-data.table(CO_data,stringsAsFactors=FALSE)
 #c("SO2","CO","O3","PM2.5","NO2")
+loaddata<-function(path = "./",confound=NULL,state=NULL){
+  require(xlsx)
+  fns <- list.files(path,pattern = "*.xls")
+  res <- NULL
+  for(i in fns) {
+    data_original<-read.xlsx(file=i,sheetIndex=1,header = T,encoding = "UTF-8")
+    ifelse(!is.null(confound),
+           data_select<-data_original[data_original$測項 %in% confound,],
+           data_select<-data_original)
+    
+    #ifelse(!is.null(state),
+    #       data_select2<-data_select[data_selectl$測站 %in% state,],
+    #       data_select2<-data_select)
+    
+    ifelse(!is.null(res),
+           res <- rbind(res, data_select), res <- data_select)
+  }
+  return(res)
+}
+
+
+
 ##############################load.data#####################################
 loaddata<-function(path = "./",confound=NULL,state=NULL){
   require(xlsx)
@@ -79,17 +102,38 @@ proc.time() - ptm
 
 # user  system elapsed  
 #86.14    0.27   90.90 
-
+##########################################
+clean_data <- function(df, impute_value){
+  n_rows <- nrow(df)
+  na_sum <- rep(NA, times = n_rows)
+  for (i in 1:n_rows){
+    na_sum[i] <- sum(ifelse(df[i,]<0,TRUE,FALSE)) # 計算每個觀測值有幾個 NA
+    df[i, ][ifelse(df[i,]<0,TRUE,FALSE)] <- impute_value # 把 NA 用某個數值取代
+  }
+  complete_cases <- df[as.logical(!na_sum), ] # 把沒有出現 NA 的觀測值保留下來
+  imputed_data <- df
+  df_df<-data.frame(imputed_data)
+  return(df_df)
+}
+###########################
+SO2_clean<-clean_data(SO2_data_cleaned,0)
+NO2_clean<-clean_data(NO2_data_cleaned,0)
+CO_clean<-clean_data(CO_data_cleaned,0)
+O3_clean<-clean_data(O3_data_cleaned,0)
+PM2.5_clean<-clean_data(PM2.5_data_cleaned,0)
+PM10_clean<-clean_data(PM10_data_cleaned,0)
+NO_clean<-clean_data(NO_data_cleaned,0)
+###########################
 
 ptm <- proc.time()
 
-SO2_data_cleaned_stat1<-SO2_data_cleaned[SO2_data_cleaned$X2 %in% "左營",]
-CO_data_cleaned_stat1<-CO_data_cleaned[CO_data_cleaned$X2 %in% "左營",]
-O3_data_cleaned_stat1<-O3_data_cleaned[O3_data_cleaned$X2 %in% "左營",]
-PM2.5_data_cleaned_stat1<-PM2.5_data_cleaned[PM2.5_data_cleaned$X2 %in% "左營",]
-NO2_data_cleaned_stat1<-NO2_data_cleaned[NO2_data_cleaned$X2 %in% "左營",]
-PM10_data_cleaned_stat1<-PM10_data_cleaned[PM10_data_cleaned$X2 %in% "左營",]
-NO_data_cleaned_stat1<-NO_data_cleaned[NO_data_cleaned$X2 %in% "左營",]
+SO2_data_cleaned_stat1<-SO2_clean[SO2_clean$X2 %in% "左營",]
+CO_data_cleaned_stat1<-CO_clean[CO_clean$X2 %in% "左營",]
+O3_data_cleaned_stat1<-O3_clean[O3_clean$X2 %in% "左營",]
+PM2.5_data_cleaned_stat1<-PM2.5_clean[PM2.5_clean$X2 %in% "左營",]
+NO2_data_cleaned_stat1<-NO2_clean[NO_clean$X2 %in% "左營",]
+PM10_data_cleaned_stat1<-PM10_clean[PM10_clean$X2 %in% "左營",]
+NO_data_cleaned_stat1<-NO_clean[NO_clean$X2 %in% "左營",]
 
 proc.time() - ptm
 
@@ -106,6 +150,7 @@ colnames(date_2017)<-colnames(outpatient_csv)[1]
 
 outpatient_alldate<-merge(date_2017, outpatient_csv, by.x="date",all.x = TRUE)
 write.csv(outpatient_alldate,"outpatient_alldate.csv",fileEncoding = "utf-8")
+
 ##########Interested information##########
 tmp<-SO2_data_cleaned_stat1
 function(x){max(x,na.rm=TRUE)}
@@ -132,8 +177,7 @@ NO_databind<-databind(NO_data_cleaned_stat1)
 
 proc.time() - ptm
 #user  system elapsed 
-#0.39    0.00    0.40 
-
+#0.39    0.00    0.40
 #######################################################
 par(mfrow = c(1, 2))
 p2<-plot(x=SO2_databind$date,y=SO2_databind$Max,type = "l",col="#ff6666",

@@ -52,8 +52,8 @@ plot.dot(PM2.5_weekday)
 ########################################
 #function
 detach()
-on.exit()
-loess.plot<-function(data,x,title="Loess Smoothing",xlab){
+sort(O3_weekday$Max)
+loess.plot<-function(data,x,title="Loess Smoothing",xlab,n=1){
   attach(data)
   data$index <- 1:nrow(data)  # create index variable
   # retail weeks for better graphical understanding
@@ -63,18 +63,19 @@ loess.plot<-function(data,x,title="Loess Smoothing",xlab){
   smoothed25 <- predict(loessMod25) 
   smoothed50 <- predict(loessMod50) 
   # Plot it
-  plot(data$`#people`, x=data$date, type="l",pch=20, main=title,xlab=xlab ,ylab="patient",col="#66b3ff")
+  plot(data$`#people`, x=data$Max, type="p",pch=20, main=title,xlab=xlab ,ylab="patient",col="#66b3ff")
   legend("topright", cex=0.7,                             
          pch = "l",                                
          col = c("#66b3ff","green","red"), 
          legend = c("true patient", "span=0.25", "span=0.5")
   )
-  lines(smoothed25, x=data$date, col="green")
-  lines(smoothed50, x=data$date, col="red")
+  lines(smoothed25, x=sort(data$Max), col="green")
+  lines(smoothed50, x=sort(data$Max), col="red")
 }
+summary(loessMod25)
 ########################################
 par(mfrow = c(1,1))
-loess.plot(SO2_weekday,Max,xlab="SO2")
+loess.plot(SO2_weekday,Max,xlab="SO2") 
 loess.plot(CO_weekday,Max,xlab="CO")
 loess.plot(NO2_weekday,Max,xlab="NO2")
 loess.plot(NO_weekday,Max,xlab="NO")
@@ -124,4 +125,36 @@ loess.plot(PM10_weekday,Mean,"Mean","PM10")
 loess.plot(PM10_weekday,Med,"Median","PM10")
 loess.plot(PM10_weekday,Min,"Minimum","PM10")
 
+##############################################
 
+loess.plot<-function(data,x,title="Loess Smoothing",xlab,n=1){
+  attach(data)
+  data$index <- 1:nrow(data)  # create index variable
+  # retail weeks for better graphical understanding
+  loessMod25 <- loess(x ~ index, data=data, span=0.25) # 25% smoothing span
+  loessMod50 <- loess(x ~ index, data=data, span=0.50)# 50% smoothing span
+  # get smoothed output
+  smoothed25 <- predict(loessMod25) 
+  smoothed50 <- predict(loessMod50) 
+  loessModp <- loess(`#people` ~ index, data=data, span=0.25)
+  smoothedp <- predict(loessModp) 
+  # Plot it
+  plot(data$`#people`, x=data$date, type="l", main=title,xlab=xlab ,ylab="patient",col="#66b3ff")
+  legend("topright", cex=0.7,                             
+         pch = "l",                                
+         col = c("#66b3ff","green","red","black"), 
+         legend = c("true patient", "span=0.25", "span=0.5","patient,span=0.25")
+  )
+  lines(smoothed25*n, x=data$date, col="green")
+  lines(smoothed50*n, x=data$date, col="red")
+  lines(smoothedp, x=data$date, col="black")
+}
+
+par(mfrow = c(1,1))
+loess.plot(SO2_weekday,Max,xlab="SO2")
+loess.plot(CO_weekday,Max,xlab="CO",n=10)
+loess.plot(NO2_weekday,Max,xlab="NO2",n=0.5)
+loess.plot(NO_weekday,Max,xlab="NO")
+loess.plot(O3_weekday,Max,xlab="O3",n=0.1)
+loess.plot(PM10_weekday,Max,xlab="PM10",n=0.1)
+loess.plot(PM2.5_weekday,Max,xlab="PM2.5",n=0.3)
