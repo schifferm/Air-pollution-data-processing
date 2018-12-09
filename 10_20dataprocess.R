@@ -1,17 +1,4 @@
 
-ptm <- proc.time()
-
-SO2_databind<-databind(SO2_data_cleaned_stat1)
-CO_databind<-databind(CO_data_cleaned_stat1)
-O3_databind<-databind(O3_data_cleaned_stat1)
-PM2.5_databind<-databind(PM2.5_data_cleaned_stat1)
-NO2_databind<-databind(NO2_data_cleaned_stat1)
-PM10_databind<-databind(PM10_data_cleaned_stat1)
-NO_databind<-databind(NO_data_cleaned_stat1)
-
-proc.time() - ptm
-
-##########################################
 SO2_weekday<-na.omit(SO2_databind)
 CO_weekday<-na.omit(CO_databind)
 O3_weekday<-na.omit(O3_databind)
@@ -19,7 +6,22 @@ PM2.5_weekday<-na.omit(PM2.5_databind)
 NO2_weekday<-na.omit(NO2_databind)
 PM10_weekday<-na.omit(PM10_databind)
 NO_weekday<-na.omit(NO_databind)
-
+rain_weekday<-na.omit(rain_databind)
+write.csv(SO2_weekday,"SO2_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(CO_weekday,"CO_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(O3_weekday,"O3_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(PM2.5_weekday,"PM2.5_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(PM10_weekday,"PM10_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(NO2_weekday,"NO2_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(NO_weekday,"NO_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+#################################################################
 plot.dot<-function(data){
 par(mfrow = c(2, 2))
 plot(x=data$Max,y=data$`#people`,type = "p",col="#66b3ff",pch=20,

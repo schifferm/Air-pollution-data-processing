@@ -1,9 +1,10 @@
-#E:/碩二上/空汙/106年 高屏空品區
+ #E:/碩二上/空汙/106年 高屏空品區
+install.packages("xlsx")
 library(xlsx)
 library(data.table)
 setwd("E:/碩二上/空汙/106年 高屏空品區")
 path<-("E:/碩二上/空汙/106年 高屏空品區")
-a<-data.table(CO_data,stringsAsFactors=FALSE)
+
 #c("SO2","CO","O3","PM2.5","NO2")
 loaddata<-function(path = "./",confound=NULL,state=NULL){
   require(xlsx)
@@ -66,11 +67,11 @@ PM2.5_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=
 NO2_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("NO2"))
 PM10_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("PM10"))
 NO_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("NO"))
-
+rain<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("RAINFALL"))
 proc.time() - ptm
 ##########################################
 #3hours
-ifelse(!(1<0),0,5)
+
 #################clean.#*x###############################################
 dataclean<-function(odata){
   pattern = "[#*x]"
@@ -97,7 +98,7 @@ PM2.5_data_cleaned<-dataclean(PM2.5_data)
 NO2_data_cleaned<-dataclean(NO2_data)
 PM10_data_cleaned<-dataclean(PM10_data)
 NO_data_cleaned<-dataclean(NO_data)
-
+rain_cleaned<-dataclean(rain)
 proc.time() - ptm
 
 # user  system elapsed  
@@ -123,8 +124,23 @@ O3_clean<-clean_data(O3_data_cleaned,0)
 PM2.5_clean<-clean_data(PM2.5_data_cleaned,0)
 PM10_clean<-clean_data(PM10_data_cleaned,0)
 NO_clean<-clean_data(NO_data_cleaned,0)
+rain_clean<-clean_data(rain_cleaned,0)
 ###########################
-
+clean_raindata <- function(df, impute_value){
+  n_rows <- nrow(df)
+  na_sum <- rep(NA, times = n_rows)
+  for (i in 1:n_rows){
+    na_sum[i] <- sum(is.na(df[i,])) # 計算每個觀測值有幾個 NA
+    df[i, ][is.na(df[i,])] <- impute_value # 把 NA 用某個數值取代
+  }
+  complete_cases <- df[as.logical(!na_sum), ] # 把沒有出現 NA 的觀測值保留下來
+  imputed_data <- df
+  df_df<-data.frame(imputed_data)
+  return(df_df)
+}
+###########################
+rain_clean<-clean_raindata(rain_cleaned,0)
+###########################
 ptm <- proc.time()
 
 SO2_data_cleaned_stat1<-SO2_clean[SO2_clean$X2 %in% "左營",]
@@ -134,8 +150,8 @@ PM2.5_data_cleaned_stat1<-PM2.5_clean[PM2.5_clean$X2 %in% "左營",]
 NO2_data_cleaned_stat1<-NO2_clean[NO_clean$X2 %in% "左營",]
 PM10_data_cleaned_stat1<-PM10_clean[PM10_clean$X2 %in% "左營",]
 NO_data_cleaned_stat1<-NO_clean[NO_clean$X2 %in% "左營",]
-
-proc.time() - ptm
+rain_clean_stat1<-rain_clean[rain_clean$X2 %in% "左營",]
+proc.time() - ptmNO_data_cleaned_stat1<-NO_clean[NO_clean$X2 %in% "左營",]
 
 ##creat.date#####
 date_2017 = data.frame(seq(from = as.Date("2017-01-01"),to = as.Date("2017-12-31"),by = "day"))
@@ -174,24 +190,26 @@ PM2.5_databind<-databind(PM2.5_data_cleaned_stat1)
 NO2_databind<-databind(NO2_data_cleaned_stat1)
 PM10_databind<-databind(PM10_data_cleaned_stat1)
 NO_databind<-databind(NO_data_cleaned_stat1)
-
+rain_databind<-databind(rain_clean_stat1)
 proc.time() - ptm
-#user  system elapsed 
-#0.39    0.00    0.40
-#######################################################
-par(mfrow = c(1, 2))
-p2<-plot(x=SO2_databind$date,y=SO2_databind$Max,type = "l",col="#ff6666",
-         main = "全年SO2趨勢", xlab ="date", ylab = "SO2",ylim=c(0,40))
-legend("topright", cex=0.5,                             
-       pch = "l",                                
-       col = c("#ff6666"), 
-       legend = c("max_O3")
-)
-abline(35,0,                          
-       lwd=1,col="#ff8c1a")
-p1<-plot(x=SO2_databind$date,y=SO2_databind$`#people`,type = "l",col="#333333",
-         main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+
+write.csv(SO2_databind,"SO2_databind.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(CO_databind,"CO_databind.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(O3_databind,"O3_databind.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(PM2.5_databind,"PM2.5_databind.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(PM10_databind,"PM10_databind.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(NO2_databind,"NO2_databind.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(NO_databind,"NO_databind.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
 #SO2
+#######################################################
+
 ##########################################
 par(mfrow = c(1, 2))
 p2<-plot(x=SO2_databind$date,SO2_databind$Max,type = "l",col="#ff6666",
@@ -215,6 +233,7 @@ p5<-plot(x=SO2_databind$date,y=SO2_databind$Med,type = "l",col="#ffd633",
 
 p1<-plot(x=SO2_databind$date,y=SO2_databind$`#people`,type = "l",col="#333333",
          main = "就診人數", xlab ="date", ylab = "人數",ylim=c(0,40))
+
 ##########################################
 par(mfrow = c(2, 2))
 plot(x=SO2_databind$Max,y=SO2_databind$`#people`,type = "p",col="#1a53ff",pch=20,

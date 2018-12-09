@@ -1,12 +1,7 @@
 library(tseries)
 library(forecast)
 library(xts)
-plot(outpatient_csv$`708&995.3`,pch=20,xlab="time",ylab="patients"
-     ,main="Frequency plot of patient")
-m1<-filter(outpatient_csv$`708&995.3`,filter=c(rep(1/5,5)))
-lines(m1,col="red",cex=1.5)
-mO3<-filter(O3_weekday$Mean,filter=c(rep(1/5,5)))
-lines(mO3*1/5,col="blue",cex=1.5)
+
 #original data
 adf.test(outpatient_csv$`708&995.3`)#UNIT ROOT TEST
 ndiffs(outpatient_csv$`708&995.3`)
