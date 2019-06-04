@@ -21,6 +21,18 @@ write.csv(NO2_weekday,"NO2_weekday.csv",fileEncoding = "utf-8",
           row.names=FALSE)
 write.csv(NO_weekday,"NO_weekday.csv",fileEncoding = "utf-8",
           row.names=FALSE)
+
+
+RAIN_weekday<-na.omit(RAIN_databind)
+TEMP_weekday<-na.omit(TEMP_databind)
+RH_weekday<-na.omit(RH_databind)
+
+write.csv(RAIN_weekday,"RAIN_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(TEMP_weekday,"TEMP_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
+write.csv(RH_weekday,"RH_weekday.csv",fileEncoding = "utf-8",
+          row.names=FALSE)
 #################################################################
 plot.dot<-function(data){
 par(mfrow = c(2, 2))

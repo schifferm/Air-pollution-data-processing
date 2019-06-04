@@ -1,0 +1,197 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{xeCJK}
+    \setCJKmainfont[AutoFakeBold=1,AutoFakeSlant=.4]{標楷體}
+    \XeTeXlinebreaklocale "zh"
+    \XeTeXlinebreakskip = 0pt plus 1pt
+\usepackage{fontspec}
+    \setmainfont{Times New Roman}
+\usepackage{setspace}
+    \onehalfspace
+    \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\parindent=0pt
+\def\Large{\fontsize{16}{24}\selectfont}
+\def\large{\fontsize{14}{20}\selectfont}
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\Large\bfseries}}
+\renewcommand\subsection{\@startsection {subsection}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\large\bfseries}}
+\makeatother
+\begin{document}
+\subsection*{蕁麻疹就診人數資料}
+資料來自高雄榮民總醫院(皮膚科)，為2017年1月1日至2017年12月31日診斷 ICD-9 代碼為995.3(過敏)每日就診人數資料，此篇為過敏的結果。
+\section*{univariate gam by smooth function}
+Generalized additive Poisson model
+$$
+\ln (patient)=Intercept+s(Airpollution)+s(temperature)+s(humidity)+s(time)
+$$
+s= a cyclic cubic regression splines\\
+
+\clearpage
+\subsection*{CO}
+\begin{table}[h]
+\centering
+\caption{smooth term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.076 & 0.096 & 0.500 & 0.703 & 0.598 & 0.378 & 0.164 \\
+  2 & 0.069 & 0.392 & 0.723 & 0.380 & 0.772 & 0.294 & 0.187 \\
+  3 & 0.821 & 0.445 & 0.244 & 0.585 & 0.274 & 0.363 & 0.284 \\
+  4 & 0.174 & 0.330 & 0.289 & 0.773 & 0.315 & 0.126 & 0.256 \\
+  5 & 0.334 & 0.134 & 0.577 & 0.504 & 0.591 & 0.226 & 0.068 \\
+  6 & 0.297 & 0.027 & 0.045 & 0.081 & 0.033 & 0.179 & 0.113 \\
+  7 & \textcolor{red}{0.004} & 0.666 & 0.248 & 0.248 & 0.546 & 0.291 & 0.759 \\
+  8 & 0.060 & 0.060 & 0.400 & 0.549 & 0.468 & 0.722 & 0.526 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+
+\clearpage
+\subsection*{SO2}
+\begin{table}[h]
+\centering
+\caption{smooth term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.087 & 0.100 & 0.521 & 0.828 & 0.970 & 0.954 & 0.529 \\
+  2 & 0.072 & 0.044 & 0.020 & 0.075 & 0.078 & 0.297 & 0.101 \\
+  3 & 0.584 & 0.031 & 0.440 & 0.008 & 0.067 & 0.331 & 0.241 \\
+  4 & 0.024 & 0.510 & 0.102 & 0.308 & 0.036 & 0.195 & 0.338 \\
+  5 & \textcolor{red}{0.005} & 0.055 & 0.436 & 0.044 & 0.211 & 0.010 & 0.020 \\
+  6 & 0.202 & 0.252 & 0.380 & 0.779 & 0.192 & 0.409 & 0.029 \\
+  7 & 0.121 & 0.063 & 0.983 & 0.273 & 0.891 & 0.500 & 0.855 \\
+  8 & 0.313 & 0.268 & 0.814 & 0.359 & 0.172 & 0.535 & 0.044 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\clearpage
+\subsection*{O3}
+\begin{table}[h]
+\centering
+\caption{smooth term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.534 & 0.090 & 0.042 & 0.359 & 0.331 & 0.523 & 0.598 \\
+  2 & 0.110 & 0.132 & 0.013 & 0.004 & 0.060 & 0.121 & 0.201 \\
+  3 & 0.606 & 0.467 & 0.669 & 0.159 & 0.060 & 0.223 & 0.191 \\
+  4 & \textcolor{red}{0.001} & 0.140 & 0.315 & 0.292 & 0.146 & 0.038 & 0.127 \\
+  5 & 0.028 & 0.376 & 0.438 & 0.309 & 0.310 & 0.103 & 0.035 \\
+  6 & 0.589 & 0.006 & 0.040 & 0.101 & 0.082 & 0.093 & 0.053 \\
+  7 & 0.065 & 0.026 & 0.013 & 0.168 & 0.209 & 0.146 & 0.130 \\
+  8 & 0.165 & 0.356 & 0.542 & 0.310 & 0.543 & 0.526 & 0.491 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\clearpage
+\subsection*{PM2.5}
+\begin{table}[h]
+\centering
+\caption{smooth term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.011 & 0.099 & 0.100 & 0.252 & 0.024 & 0.127 & 0.232 \\
+  2 & 0.422 & 0.378 & 0.740 & 0.109 & 0.079 & 0.001 & 0.007 \\
+  3 & 0.030 & 0.979 & 0.332 & 0.936 & 0.323 & 0.328 & 0.023 \\
+  4 & \textcolor{red}{0.000} & 0.020 & 0.004 & 0.475 & 0.118 & 0.020 & 0.040 \\
+  5 & 0.291 & 0.002 & 0.339 & 0.009 & 0.393 & 0.160 & 0.036 \\
+  6 & 0.982 & 0.191 & 0.164 & 0.290 & 0.059 & 0.518 & 0.313 \\
+  7 & 0.260 & 0.082 & 0.393 & 0.292 & 0.127 & 0.044 & 0.271 \\
+  8 & 0.011 & 0.236 & 0.024 & 0.906 & 0.469 & 0.393 & 0.274 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\clearpage
+\subsection*{PM10}
+\begin{table}[h]
+\centering
+\caption{smooth term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.094 & 0.253 & 0.234 & 0.265 & 0.075 & 0.367 & 0.633 \\
+  2 & \textcolor{red}{0.001} & 0.107 & 0.969 & 0.481 & 0.235 & 0.055 & 0.162 \\
+  3 & 0.003 & 0.459 & 0.144 & 0.879 & 0.661 & 0.412 & 0.298 \\
+  4 & 0.016 & 0.553 & 0.902 & 0.540 & 0.816 & 0.450 & 0.275 \\
+  5 & 0.432 & 0.114 & 0.882 & 0.813 & 0.464 & 0.783 & 0.446 \\
+  6 & 0.901 & 0.783 & 0.923 & 0.900 & 0.870 & 0.367 & 0.851 \\
+  7 & 0.037 & 0.252 & 0.995 & 0.913 & 0.939 & 0.997 & 0.662 \\
+  8 & 0.048 & 0.827 & 0.478 & 0.960 & 0.952 & 0.825 & 0.790 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\clearpage
+\subsection*{NO}
+\begin{table}[h]
+\centering
+\caption{smooth term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.335 & 0.563 & 0.804 & 0.773 & 0.340 & 0.006 & 0.014 \\
+  2 & 0.870 & 0.956 & 0.872 & 0.654 & 0.340 & 0.194 & 0.034 \\
+  3 & 0.846 & 0.595 & 0.913 & 0.805 & 0.653 & 0.211 & 0.138 \\
+  4 & 0.318 & 0.452 & 0.422 & 0.642 & 0.259 & 0.071 & 0.006 \\
+  5 & 0.408 & 0.019 & 0.222 & 0.445 & 0.425 & 0.383 & 0.233 \\
+  6 & \textcolor{red}{0.054} & 0.044 & 0.001 & 0.007 & 0.006 & 0.006 & 0.036 \\
+  7 & 0.274 & 0.125 & 0.486 & 0.035 & 0.241 & 0.100 & 0.065 \\
+  8 & 0.138 & 0.967 & 0.383 & 0.833 & 0.097 & 0.454 & 0.251 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\clearpage
+\subsection*{NO2}
+\begin{table}[h]
+\centering
+\caption{smooth term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.002 & 0.128 & 0.861 & 0.905 & 0.949 & 0.971 & 0.725 \\
+  2 & 0.001 & 0.778 & 0.630 & 0.276 & 0.852 & 0.813 & 0.594 \\
+  3 & 0.098 & 0.100 & 0.589 & 0.466 & 0.193 & 0.651 & 0.598 \\
+  4 & 0.008 & 0.537 & 0.284 & 0.452 & 0.195 & 0.079 & 0.302 \\
+  5 & 0.072 & 0.000 & 0.185 & 0.129 & 0.162 & 0.058 & 0.023 \\
+  6 & 0.442 & 0.009 & 0.006 & 0.045 & 0.074 & 0.214 & 0.163 \\
+  7 & \textcolor{red}{0.000} & 0.001 & 0.275 & 0.037 & 0.244 & 0.433 & 0.517 \\
+  8 & 0.394 & 0.155 & 0.006 & 0.415 & 0.087 & 0.251 & 0.260 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\clearpage
+
+
+
+\end{document} 

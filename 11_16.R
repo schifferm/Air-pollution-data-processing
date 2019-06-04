@@ -26,11 +26,14 @@ airandpatient_weekday<-data.frame(cbind(data.frame(outpatient_csv$date),
                          PM10_weekday$Mean,
                          NO2_weekday$Mean,
                          NO_weekday$Mean,
+                         RAIN_weekday$Mean,
+                         TEMP_weekday$Mean,
+                         RH_weekday$Mean,
                          outpatient_csv$`708&995.3`))
 airandpatient_weekday<-data.frame(airandpatient_weekday[[1]],
-                                  round(airandpatient_weekday[2:9],digits = 4))
+                                  round(airandpatient_weekday[2:12],digits = 4))
 colnames(airandpatient_weekday)<-c("date","SO2","CO","O3",
-                                   "PM2.5","PM10","NO2","NO","patient")
+                                   "PM2.5","PM10","NO2","NO","RAIN","TEMP","RH","patient")
 write.csv(airandpatient_weekday,"airandpatient_weekday.csv",fileEncoding = "utf-8",
           row.names=FALSE)
 a<-read.csv("DATA/airandpatient_weekday.csv")

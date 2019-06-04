@@ -1,0 +1,320 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{xeCJK}
+    \setCJKmainfont[AutoFakeBold=1,AutoFakeSlant=.4]{標楷體}
+    \XeTeXlinebreaklocale "zh"
+    \XeTeXlinebreakskip = 0pt plus 1pt
+\usepackage{fontspec}
+    \setmainfont{Times New Roman}
+\usepackage{setspace}
+    \onehalfspace
+    \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\parindent=0pt
+\def\Large{\fontsize{16}{24}\selectfont}
+\def\large{\fontsize{14}{20}\selectfont}
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\Large\bfseries}}
+\renewcommand\subsection{\@startsection {subsection}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\large\bfseries}}
+\makeatother
+\begin{document}
+\subsection*{蕁麻疹就診人數資料}
+資料來自高雄榮民總醫院(皮膚科)，為2017年1月1日至2017年12月31日診斷 ICD-9 代碼為995.3(過敏)每日就診人數資料，此篇為蕁麻疹的結果。
+\section*{univariate gam}
+Generalized additive Poisson model
+$$
+\ln (patient)=Intercept+\beta \times Airpollution+s(temperature)+s(humidity)+s(time)
+$$
+s= a cyclic cubic regression splines\\
+下列依不同的空汙指標分別做單變數 Generalized additive Poisson model，並以時間趨勢、當天的溫度與濕度作為共變量做平滑函數的擬合，下列各空汙列出了不同的滯後天數(row,當天~前七天
+)與不同的移動平均天數(colum,當天平均~七天平均)的模型結果(p-value與空汙估計係數)
+\clearpage
+\subsection*{CO}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & p.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.089 & 0.188 & 0.355 & 0.266 & 0.060 & 0.099 & 0.136 \\
+  2 & 0.890 & 0.436 & 0.419 & 0.578 & 0.420 & 0.149 & 0.241 \\
+  3 & 0.149 & 0.231 & 0.137 & 0.169 & 0.282 & 0.151 & 0.034 \\
+  4 & 0.126 & 0.066 & 0.106 & 0.066 & 0.082 & 0.121 & 0.052 \\
+  5 & 0.004 & 0.032 & 0.028 & 0.051 & 0.034 & 0.055 & 0.109 \\
+  6 & 0.586 & 0.163 & 0.162 & 0.113 & 0.137 & 0.068 & 0.072 \\
+  7 & 0.211 & 0.467 & 0.046 & 0.040 & 0.025 & 0.037 & 0.017 \\
+  8 & 0.166 & 0.762 & 0.660 & 0.476 & 0.387 & 0.251 & 0.298 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Parametric coefficients with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & beta & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.575 & 0.562 & 0.461 & 0.627 & 1.184 & 1.156 & 1.140 \\
+  2 & 0.049 & 0.332 & 0.403 & 0.315 & 0.509 & 1.008 & 0.892 \\
+  3 & 0.495 & 0.513 & 0.737 & 0.776 & 0.678 & 1.005 & 1.615 \\
+  4 & 0.525 & 0.783 & 0.802 & 1.033 & 1.095 & 1.085 & 1.480 \\
+  5 & 0.936 & 0.907 & 1.087 & 1.097 & 1.329 & 1.340 & 1.218 \\
+  6 & -0.198 & 0.599 & 0.696 & 0.892 & 0.938 & 1.276 & 1.369 \\
+  7 & 0.433 & 0.315 & 0.988 & 1.157 & 1.409 & 1.461 & 1.823 \\
+  8 & -0.513 & -0.133 & -0.222 & 0.403 & 0.544 & 0.799 & 0.791 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\subsection*{SO2}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & p.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.597 & 0.019 & 0.026 & 0.009 & 0.001 & 0.019 & 0.022 \\
+  2 & 0.303 & 0.871 & 0.124 & 0.075 & 0.024 & 0.002 & 0.035 \\
+  3 & 0.011 & 0.358 & 0.252 & 0.025 & 0.020 & 0.005 & 0.000 \\
+  4 & 0.769 & 0.086 & 0.434 & 0.336 & 0.053 & 0.038 & 0.011 \\
+  5 & 0.143 & 0.282 & 0.044 & 0.204 & 0.167 & 0.031 & 0.026 \\
+  6 & 0.029 & 0.703 & 0.967 & 0.378 & 0.657 & 0.461 & 0.116 \\
+  7 & 0.702 & 0.287 & 0.938 & 0.732 & 0.256 & 0.487 & 0.343 \\
+  8 & 0.016 & 0.114 & 0.815 & 0.473 & 0.400 & 0.144 & 0.314 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Parametric coefficients with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & beta & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.022 & 0.122 & 0.133 & 0.173 & 0.253 & 0.182 & 0.187 \\
+  2 & -0.044 & -0.008 & 0.092 & 0.118 & 0.165 & 0.236 & 0.172 \\
+  3 & 0.108 & 0.048 & 0.068 & 0.149 & 0.170 & 0.218 & 0.290 \\
+  4 & 0.012 & 0.089 & 0.047 & 0.064 & 0.141 & 0.161 & 0.208 \\
+  5 & 0.062 & 0.056 & 0.121 & 0.085 & 0.100 & 0.167 & 0.182 \\
+  6 & -0.092 & -0.020 & -0.002 & 0.058 & 0.032 & 0.056 & 0.128 \\
+  7 & 0.016 & -0.055 & -0.005 & 0.023 & 0.082 & 0.053 & 0.077 \\
+  8 & 0.102 & 0.082 & 0.014 & 0.048 & 0.061 & 0.113 & 0.082 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\subsection*{O3}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & p.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.323 & 0.388 & 0.562 & 0.448 & 0.269 & 0.412 & 0.257 \\
+  2 & 0.129 & 0.123 & 0.154 & 0.237 & 0.176 & 0.095 & 0.137 \\
+  3 & 0.368 & 0.134 & 0.107 & 0.155 & 0.241 & 0.194 & 0.126 \\
+  4 & 0.004 & 0.020 & 0.020 & 0.027 & 0.050 & 0.099 & 0.084 \\
+  5 & 0.649 & 0.102 & 0.120 & 0.080 & 0.071 & 0.090 & 0.128 \\
+  6 & 0.124 & 0.622 & 0.505 & 0.415 & 0.269 & 0.210 & 0.216 \\
+  7 & 0.940 & 0.716 & 0.809 & 0.269 & 0.218 & 0.134 & 0.097 \\
+  8 & 0.394 & 0.450 & 0.340 & 0.629 & 0.755 & 0.598 & 0.405 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Parametric coefficients with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & beta & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.003 & 0.003 & 0.002 & 0.003 & 0.005 & 0.004 & 0.005 \\
+  2 & 0.005 & 0.006 & 0.006 & 0.005 & 0.006 & 0.007 & 0.007 \\
+  3 & 0.003 & 0.005 & 0.006 & 0.006 & 0.005 & 0.006 & 0.007 \\
+  4 & 0.009 & 0.008 & 0.009 & 0.009 & 0.008 & 0.007 & 0.008 \\
+  5 & 0.002 & 0.006 & 0.006 & 0.007 & 0.008 & 0.007 & 0.007 \\
+  6 & -0.005 & -0.002 & 0.003 & 0.003 & 0.005 & 0.006 & 0.006 \\
+  7 & 0.000 & -0.001 & 0.001 & 0.005 & 0.005 & 0.007 & 0.008 \\
+  8 & -0.003 & -0.003 & -0.004 & -0.002 & 0.001 & 0.002 & 0.004 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\subsection*{PM2.5}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & p.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.017 & 0.300 & 0.626 & 0.201 & 0.289 & 0.466 & 0.595 \\
+  2 & 0.266 & 0.572 & 0.949 & 0.797 & 0.568 & 0.687 & 0.894 \\
+  3 & 0.000 & 0.034 & 0.006 & 0.048 & 0.132 & 0.030 & 0.055 \\
+  4 & 0.003 & 0.000 & 0.002 & 0.000 & 0.005 & 0.017 & 0.003 \\
+  5 & 0.608 & 0.097 & 0.002 & 0.028 & 0.009 & 0.045 & 0.103 \\
+  6 & 0.818 & 0.714 & 0.152 & 0.007 & 0.035 & 0.010 & 0.037 \\
+  7 & 0.947 & 0.889 & 0.506 & 0.101 & 0.005 & 0.018 & 0.004 \\
+  8 & 0.574 & 0.905 & 0.984 & 0.791 & 0.296 & 0.038 & 0.088 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Parametric coefficients with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & beta & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.009 & 0.005 & 0.003 & 0.008 & 0.007 & 0.005 & 0.004 \\
+  2 & -0.004 & 0.003 & 0.000 & -0.002 & 0.004 & 0.003 & 0.001 \\
+  3 & 0.016 & 0.010 & 0.015 & 0.012 & 0.010 & 0.016 & 0.015 \\
+  4 & 0.011 & 0.021 & 0.017 & 0.022 & 0.019 & 0.018 & 0.024 \\
+  5 & 0.002 & 0.008 & 0.017 & 0.014 & 0.018 & 0.015 & 0.013 \\
+  6 & -0.001 & 0.002 & 0.008 & 0.017 & 0.014 & 0.019 & 0.016 \\
+  7 & 0.000 & 0.001 & 0.004 & 0.010 & 0.019 & 0.018 & 0.022 \\
+  8 & 0.002 & 0.001 & -0.000 & 0.002 & 0.007 & 0.015 & 0.013 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\subsection*{PM10}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & p.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.447 & 0.882 & 0.599 & 0.867 & 0.943 & 0.604 & 0.922 \\
+  2 & 0.282 & 0.815 & 0.637 & 0.382 & 0.926 & 0.769 & 0.524 \\
+  3 & 0.050 & 0.486 & 0.326 & 0.613 & 0.987 & 0.513 & 0.698 \\
+  4 & 0.365 & 0.058 & 0.293 & 0.223 & 0.437 & 0.763 & 0.347 \\
+  5 & 0.491 & 0.881 & 0.467 & 0.851 & 0.657 & 0.939 & 0.740 \\
+  6 & 0.131 & 0.199 & 0.467 & 0.945 & 0.745 & 0.999 & 0.785 \\
+  7 & 0.169 & 0.120 & 0.205 & 0.504 & 0.897 & 0.865 & 0.825 \\
+  8 & 0.303 & 0.571 & 0.270 & 0.263 & 0.466 & 0.974 & 0.733 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Parametric coefficients with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & beta & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.001 & 0.000 & -0.002 & 0.000 & -0.000 & -0.002 & 0.000 \\
+  2 & -0.002 & -0.001 & -0.001 & -0.003 & -0.000 & -0.001 & -0.003 \\
+  3 & 0.003 & 0.002 & 0.003 & 0.002 & -0.000 & 0.002 & 0.002 \\
+  4 & 0.002 & 0.004 & 0.003 & 0.004 & 0.003 & 0.001 & 0.004 \\
+  5 & -0.001 & -0.000 & 0.002 & 0.001 & 0.002 & 0.000 & -0.001 \\
+  6 & -0.003 & -0.003 & -0.002 & 0.000 & -0.001 & 0.000 & -0.001 \\
+  7 & -0.003 & -0.004 & -0.004 & -0.002 & 0.000 & -0.001 & 0.001 \\
+  8 & 0.002 & -0.001 & -0.003 & -0.004 & -0.003 & -0.000 & -0.001 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\subsection*{NO}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & p.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.551 & 0.384 & 0.616 & 0.771 & 0.715 & 0.693 & 0.772 \\
+  2 & 0.222 & 0.455 & 0.774 & 0.686 & 0.565 & 0.610 & 0.548 \\
+  3 & 0.786 & 0.577 & 0.664 & 0.927 & 0.882 & 0.805 & 0.922 \\
+  4 & 0.066 & 0.239 & 0.141 & 0.216 & 0.397 & 0.439 & 0.437 \\
+  5 & 0.260 & 0.631 & 0.671 & 0.436 & 0.483 & 0.658 & 0.605 \\
+  6 & 0.783 & 0.638 & 0.631 & 0.669 & 0.487 & 0.574 & 0.771 \\
+  7 & 0.795 & 0.634 & 0.881 & 0.340 & 0.312 & 0.166 & 0.177 \\
+  8 & 0.504 & 0.497 & 0.895 & 0.710 & 0.754 & 0.700 & 0.457 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Parametric coefficients with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & beta & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.017 & 0.029 & 0.018 & 0.012 & 0.016 & 0.018 & -0.014 \\
+  2 & -0.036 & -0.025 & -0.011 & -0.017 & -0.025 & -0.024 & -0.029 \\
+  3 & 0.008 & -0.019 & -0.016 & -0.004 & -0.006 & -0.011 & -0.005 \\
+  4 & -0.054 & -0.040 & -0.055 & -0.051 & -0.037 & -0.036 & -0.038 \\
+  5 & 0.032 & -0.016 & -0.016 & -0.032 & -0.031 & -0.021 & -0.025 \\
+  6 & -0.008 & 0.015 & -0.018 & -0.017 & -0.030 & -0.026 & -0.014 \\
+  7 & 0.007 & -0.016 & -0.006 & -0.039 & -0.045 & -0.065 & -0.067 \\
+  8 & 0.019 & 0.022 & 0.005 & 0.015 & -0.014 & -0.018 & -0.037 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\subsection*{NO2}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & p.pv & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.539 & 0.937 & 0.862 & 0.449 & 0.453 & 0.682 & 0.936 \\
+  2 & 0.021 & 0.124 & 0.105 & 0.221 & 0.571 & 0.611 & 0.409 \\
+  3 & 0.005 & 0.557 & 0.721 & 0.918 & 0.996 & 0.603 & 0.586 \\
+  4 & 0.750 & 0.059 & 0.575 & 0.681 & 0.966 & 0.835 & 0.460 \\
+  5 & 0.170 & 0.717 & 0.183 & 0.782 & 0.908 & 0.794 & 0.818 \\
+  6 & 0.869 & 0.394 & 0.715 & 0.260 & 0.789 & 0.847 & 0.906 \\
+  7 & 0.763 & 0.609 & 0.314 & 0.460 & 0.156 & 0.535 & 0.580 \\
+  8 & 0.092 & 0.334 & 0.461 & 0.310 & 0.510 & 0.222 & 0.646 \\
+   \hline
+\end{tabular}
+\\row:lag days,col:moving average for the n days
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Parametric coefficients with lag and moving average data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & beta & mv2 & mv3 & mv4 & mv5 & mv6 & mv7 \\
+  \hline
+1 & 0.007 & -0.001 & 0.003 & 0.012 & 0.013 & 0.008 & -0.002 \\
+  2 & -0.026 & -0.020 & -0.024 & -0.020 & -0.010 & -0.010 & -0.017 \\
+  3 & 0.030 & 0.008 & 0.005 & -0.002 & -0.000 & 0.010 & 0.011 \\
+  4 & 0.004 & 0.024 & 0.008 & 0.007 & 0.001 & 0.004 & 0.015 \\
+  5 & 0.015 & 0.005 & 0.019 & 0.004 & 0.002 & -0.005 & -0.005 \\
+  6 & 0.002 & 0.011 & 0.005 & 0.018 & 0.005 & 0.004 & -0.002 \\
+  7 & 0.003 & 0.007 & 0.015 & 0.012 & 0.025 & 0.012 & 0.011 \\
+  8 & 0.018 & 0.012 & 0.011 & 0.016 & 0.012 & 0.023 & 0.009 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\end{document} 

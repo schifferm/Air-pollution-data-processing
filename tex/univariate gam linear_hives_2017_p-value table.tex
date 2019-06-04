@@ -1,0 +1,194 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{xeCJK}
+    \setCJKmainfont[AutoFakeBold=1,AutoFakeSlant=.4]{標楷體}
+    \XeTeXlinebreaklocale "zh"
+    \XeTeXlinebreakskip = 0pt plus 1pt
+\usepackage{fontspec}
+    \setmainfont{Times New Roman}
+\usepackage{setspace}
+    \onehalfspace
+    \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\parindent=0pt
+\def\Large{\fontsize{16}{24}\selectfont}
+\def\large{\fontsize{14}{20}\selectfont}
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\Large\bfseries}}
+\renewcommand\subsection{\@startsection {subsection}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\large\bfseries}}
+\makeatother
+\begin{document}
+\subsection*{蕁麻疹就診人數資料}
+資料來自高雄榮民總醫院(皮膚科)，為2017年1月1日至2017年12月31日診斷 ICD-9 代碼為708(蕁麻疹)每日就診人數資料，此篇為蕁麻疹的結果。
+\section*{univariate gam}
+Generalized additive Poisson model
+$$
+\ln (patient)=Intercept+\beta \times Air+s(temperature)+
+$$
+$$
+s(humidity)+s(time)+s(rain)+s(windspeed)
+$$
+s= a cyclic cubic regression splines\\
+下列依不同的空汙指標分別做單變數 Generalized additive Poisson model，並以時間趨勢、當天的溫度、濕度、雨量與風速作為共變量做平滑函數的擬合，下列各空汙列出了不同的滯後天數(row,當天~前七天
+)的模型結果(p-value與空汙估計係數)
+\clearpage
+\subsection*{CO}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag  data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & air\_p.pv & air\_coeff & TEMP & RH & day & WS\_HR & RAIN \\
+  \hline
+lag0 & 0.41 & 0.36 & 0.78 & 0.19 & 0.07 & 0.30 & 0.01 \\
+  lag1 & 0.09 & -0.65 & 0.01 & 0.87 & 0.35 & 0.42 & 0.77 \\
+  lag2 & \color{red}{0.00} & \color{red}{-1.96} & 0.00 & 0.01 & 0.02 & 0.00 & 0.76 \\
+  lag3 & 0.73 & 0.14 & 0.01 & 0.50 & 0.12 & 0.27 & 0.54 \\
+  lag4 & \color{red}{0.00} & \color{red}{1.56} & 0.00 & 0.17 & 0.17 & 0.31 & 0.83 \\
+  lag5 & 0.04 & 0.81 & 0.06 & 0.02 & 0.25 & 0.23 & 0.43 \\
+  lag6 & 0.56 & 0.25 & 0.21 & 0.02 & 0.04 & 0.62 & 0.96 \\
+  lag7 & 1.00 & 0.00 & 0.08 & 0.12 & 0.17 & 0.92 & 0.01 \\
+   \hline
+\end{tabular}
+\\row:lag days,col 3~8:smooth covariates
+\end{table}
+
+\subsection*{SO2}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & air\_p.pv & air\_coeff & TEMP & RH & day & WS\_HR & RAIN \\
+  \hline
+lag0 & 0.11 & 0.05 & 0.80 & 0.24 & 0.09 & 0.17 & 0.01 \\
+  lag1 & 0.42 & -0.03 & 0.02 & 0.93 & 0.44 & 0.06 & 0.79 \\
+  lag2 & 0.06 & -0.06 & 0.00 & 0.05 & 0.04 & 0.22 & 0.82 \\
+  lag3 & 0.91 & 0.00 & 0.01 & 0.51 & 0.14 & 0.18 & 0.55 \\
+  lag4 & \color{red}{0.00} & \color{red}{0.11} & 0.02 & 0.13 & 0.50 & 0.97 & 0.93 \\
+  lag5 & 0.59 & 0.02 & 0.04 & 0.02 & 0.51 & 0.78 & 0.44 \\
+  lag6 & 0.40 & 0.03 & 0.16 & 0.03 & 0.05 & 0.57 & 0.95 \\
+  lag7 & 0.51 & 0.02 & 0.08 & 0.16 & 0.13 & 0.86 & 0.01 \\
+   \hline
+\end{tabular}
+\\row:lag days,col 3~8:smooth covariates
+\end{table}
+\clearpage
+\subsection*{O3}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & air\_p.pv & air\_coeff & TEMP & RH & day & WS\_HR & RAIN \\
+  \hline
+lag0 & 0.88 & 0.00 & 0.69 & 0.19 & 0.10 & 0.28 & 0.01 \\
+  lag1 & 0.18 & 0.00 & 0.19 & 0.91 & 0.46 & 0.04 & 0.77 \\
+  lag2 & 0.28 & 0.00 & 0.00 & 0.43 & 0.07 & 0.27 & 0.68 \\
+  lag3 & 0.02 & 0.01 & 0.02 & 0.55 & 0.05 & 0.27 & 0.47 \\
+  lag4 & 0.06 & 0.01 & 0.02 & 0.16 & 0.07 & 0.21 & 0.87 \\
+  lag5 & 0.02 & 0.01 & 0.38 & 0.01 & 0.20 & 0.58 & 0.32 \\
+  lag6 & 0.41 & 0.00 & 0.34 & 0.06 & 0.04 & 0.78 & 0.97 \\
+  lag7 & \color{red}{0.01} & \color{red}{ 0.00940} & 0.46 & 0.69 & 0.08 & 0.73 & 0.01 \\
+   \hline
+\end{tabular}
+\\row:lag days,col 3~8:smooth covariates
+\end{table}
+
+\clearpage
+\subsection*{PM2.5}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag  data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & air\_p.pv & air\_coeff & TEMP & RH & day & WS\_HR & RAIN \\
+  \hline
+lag0 & 0.99 & -0.00 & 0.58 & 0.12 & 0.10 & 0.27 & 0.01 \\
+  lag1 & 0.04 & -0.00 & 0.04 & 0.84 & 0.46 & 0.17 & 0.86 \\
+  lag2 & \color{red}{0.01} & \color{red}{-0.00429} & 0.00 & 0.08 & 0.10 & 0.11 & 0.64 \\
+  lag3 & 0.65 & -0.00 & 0.01 & 0.49 & 0.13 & 0.17 & 0.54 \\
+  lag4 & 0.99 & -0.00 & 0.01 & 0.35 & 0.16 & 0.38 & 0.82 \\
+  lag5 & 0.90 & 0.00 & 0.04 & 0.02 & 0.45 & 0.77 & 0.47 \\
+  lag6 & 0.39 & -0.00 & 0.10 & 0.01 & 0.10 & 0.66 & 0.97 \\
+  lag7 & \color{red}{0.01} & \color{red}{0.00262} & 0.05 & 0.17 & 0.07 & 0.69 & 0.01 \\
+   \hline
+\end{tabular}
+\\row:lag days,col 3~8:smooth covariates
+\end{table}
+
+
+\subsection*{PM10}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & air\_p.pv & air\_coeff & TEMP & RH & day & WS\_HR & RAIN \\
+  \hline
+lag0 & 0.03 & 0.00 & 0.77 & 0.45 & 0.02 & 0.24 & 0.01 \\
+  lag1 & 0.02 & 0.00 & 0.03 & 0.96 & 0.62 & 0.02 & 0.70 \\
+  lag2 & 0.60 & 0.00 & 0.00 & 0.16 & 0.10 & 0.29 & 0.64 \\
+  lag3 & 0.48 & 0.00 & 0.01 & 0.48 & 0.12 & 0.24 & 0.50 \\
+  lag4 & 0.35 & -0.00 & 0.01 & 0.42 & 0.16 & 0.37 & 0.76 \\
+  lag5 & 0.61 & -0.00 & 0.03 & 0.02 & 0.50 & 0.82 & 0.51 \\
+  lag6 & \color{red}{0.01} & \color{red}{0.00399} & 0.20 & 0.08 & 0.01 & 0.56 & 0.98 \\
+  lag7 & 0.29 & 0.00 & 0.09 & 0.24 & 0.08 & 0.76 & 0.01 \\
+   \hline
+\end{tabular}
+\\row:lag days,col 3~8:smooth covariates
+\end{table}
+
+\clearpage
+\subsection*{NO}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & air\_p.pv & air\_coeff & TEMP & RH & day & WS\_HR & RAIN \\
+  \hline
+lag0 & 0.61 & -0.01 & 0.70 & 0.15 & 0.11 & 0.26 & 0.01 \\
+  lag1 & 0.01 & -0.06 & 0.20 & 0.90 & 0.24 & 0.27 & 0.69 \\
+  lag2 & \color{red}{0.00} & \color{red}{-0.11} & 0.01 & 0.58 & 0.01 & 0.01 & 0.72 \\
+  lag3 & 0.98 & -0.00 & 0.01 & 0.51 & 0.13 & 0.19 & 0.55 \\
+  lag4 & 0.06 & 0.04 & 0.00 & 0.40 & 0.41 & 0.83 & 0.81 \\
+  lag5 & 0.21 & -0.03 & 0.13 & 0.02 & 0.36 & 0.82 & 0.44 \\
+  lag6 & 0.38 & -0.02 & 0.23 & 0.03 & 0.06 & 0.70 & 0.99 \\
+  lag7 & 0.00029 & -0.08 & 0.32 & 0.59 & 0.17 & 0.40 & 0.00 \\
+   \hline
+\end{tabular}
+\\row:lag days,col 3~8:smooth covariates
+\end{table}
+
+
+\subsection*{NO2}
+\begin{table}[h]
+\centering
+\caption{linear term p-value with lag data}
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & air\_p.pv & air\_coeff & TEMP & RH & day & WS\_HR & RAIN \\
+  \hline
+lag0 & 0.18 & 0.02 & 0.60 & 0.26 & 0.04 & 0.28 & 0.01 \\
+  lag1 & 0.01 & -0.03 & 0.03 & 0.79 & 0.21 & 0.71 & 0.74 \\
+  lag2 & \color{red}{0.00} & \color{red}{-0.07} & 0.03 & 0.00 & 0.00 & 0.00 & 0.84 \\
+  lag3 & 0.17 & 0.01 & 0.00 & 0.47 & 0.15 & 0.40 & 0.52 \\
+  lag4 & \color{red}{0.00} & \color{red}{0.05} & 0.00 & 0.11 & 0.28 & 0.11 & 0.85 \\
+  lag5 & 0.05 & 0.02 & 0.02 & 0.01 & 0.30 & 0.24 & 0.44 \\
+  lag6 & 0.82 & -0.00 & 0.11 & 0.01 & 0.08 & 0.65 & 0.98 \\
+  lag7 & 0.34 & -0.01 & 0.03 & 0.08 & 0.27 & 0.92 & 0.01 \\
+   \hline
+\end{tabular}
+\\row:lag days,col 3~8:smooth covariates
+\end{table}
+
+\end{document} 

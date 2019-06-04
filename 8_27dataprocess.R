@@ -1,40 +1,20 @@
  #E:/碩二上/空汙/106年 高屏空品區
-install.packages("xlsx")
-library(xlsx)
+library(readxl)
 library(data.table)
 setwd("E:/碩二上/空汙/106年 高屏空品區")
 path<-("E:/碩二上/空汙/106年 高屏空品區")
 
 #c("SO2","CO","O3","PM2.5","NO2")
-loaddata<-function(path = "./",confound=NULL,state=NULL){
-  require(xlsx)
-  fns <- list.files(path,pattern = "*.xls")
-  res <- NULL
-  for(i in fns) {
-    data_original<-read.xlsx(file=i,sheetIndex=1,header = T,encoding = "UTF-8")
-    ifelse(!is.null(confound),
-           data_select<-data_original[data_original$測項 %in% confound,],
-           data_select<-data_original)
-    
-    #ifelse(!is.null(state),
-    #       data_select2<-data_select[data_selectl$測站 %in% state,],
-    #       data_select2<-data_select)
-    
-    ifelse(!is.null(res),
-           res <- rbind(res, data_select), res <- data_select)
-  }
-  return(res)
-}
 
 
 
 ##############################load.data#####################################
 loaddata<-function(path = "./",confound=NULL,state=NULL){
-  require(xlsx)
+  setwd(path)
   fns <- list.files(path,pattern = "*.xls")
   res <- NULL
   for(i in fns) {
-  data_original<-read.xlsx(file=i,sheetIndex=1,header = T,encoding = "UTF-8")
+    data_original<-read_xls(path = i,sheet = 1,col_names = TRUE,col_types  = "guess")
   ifelse(!is.null(confound),
          data_select<-data_original[data_original$測項 %in% confound,],
          data_select<-data_original)
@@ -67,11 +47,9 @@ PM2.5_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=
 NO2_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("NO2"))
 PM10_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("PM10"))
 NO_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("NO"))
-rain<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("RAINFALL"))
 proc.time() - ptm
 ##########################################
 #3hours
-
 #################clean.#*x###############################################
 dataclean<-function(odata){
   pattern = "[#*x]"
@@ -126,7 +104,7 @@ PM10_clean<-clean_data(PM10_data_cleaned,0)
 NO_clean<-clean_data(NO_data_cleaned,0)
 rain_clean<-clean_data(rain_cleaned,0)
 ###########################
-clean_raindata <- function(df, impute_value){
+clean_NAdata <- function(df, impute_value){
   n_rows <- nrow(df)
   na_sum <- rep(NA, times = n_rows)
   for (i in 1:n_rows){
@@ -139,7 +117,7 @@ clean_raindata <- function(df, impute_value){
   return(df_df)
 }
 ###########################
-rain_clean<-clean_raindata(rain_cleaned,0)
+rain_clean<-clean_NAdata(rain_cleaned,0)
 ###########################
 ptm <- proc.time()
 
@@ -151,8 +129,8 @@ NO2_data_cleaned_stat1<-NO2_clean[NO_clean$X2 %in% "左營",]
 PM10_data_cleaned_stat1<-PM10_clean[PM10_clean$X2 %in% "左營",]
 NO_data_cleaned_stat1<-NO_clean[NO_clean$X2 %in% "左營",]
 rain_clean_stat1<-rain_clean[rain_clean$X2 %in% "左營",]
-proc.time() - ptmNO_data_cleaned_stat1<-NO_clean[NO_clean$X2 %in% "左營",]
-
+NO_data_cleaned_stat1<-NO_clean[NO_clean$X2 %in% "左營",]
+proc.time() - ptm
 ##creat.date#####
 date_2017 = data.frame(seq(from = as.Date("2017-01-01"),to = as.Date("2017-12-31"),by = "day"))
 #################
@@ -160,6 +138,8 @@ outpatient<-read.xlsx(file="E:/碩二上/空汙/就診資料/20170101-20171231�
 outpatient_csv<-read.csv("E:/碩二上/空汙/就診資料/20170101-20171231每日人數.csv")
 outpatient_csv<-outpatient_csv[1:249,1:4]
 names(outpatient_csv)<-c("date","708","995.3","708&995.3")
+outpatient_csv<-clean_NAdata(outpatient_csv,0)
+
 
 outpatient_csv[,1]<-as.Date(outpatient_csv[,1])
 colnames(date_2017)<-colnames(outpatient_csv)[1]
@@ -168,18 +148,71 @@ outpatient_alldate<-merge(date_2017, outpatient_csv, by.x="date",all.x = TRUE)
 write.csv(outpatient_alldate,"outpatient_alldate.csv",fileEncoding = "utf-8")
 
 ##########Interested information##########
-tmp<-SO2_data_cleaned_stat1
-function(x){max(x,na.rm=TRUE)}
 databind<-function(tmp){
   max<-data.frame(apply(tmp[4:27],1,function(x){max(x,na.rm=TRUE)}))
   min<-data.frame(apply(tmp[4:27],1,function(x){min(x,na.rm=TRUE)}))
   mean<-data.frame(apply(tmp[4:27],1,function(x){mean(x,na.rm=TRUE)}))
   med<-data.frame(apply(tmp[4:27],1,function(x){median(x,na.rm=TRUE)}))
-  obs<-cbind(outpatient_alldate$date,
-             max,mean,med,min,outpatient_alldate$`708&995.3`)
-  colnames(obs)<-c("date","Max","Mean","Med","Min","#people")
+  obs<-cbind(patient_k_alldate$date,
+             max,mean,med,min,patient_k_alldate$X708,patient_k_alldate$X995.3)
+  colnames(obs)<-c("date","Max","Mean","Med","Min","708","995.3")
   return(obs)
   }
+#######################################################
+#alldata
+
+cal_mean<-function(data){
+  tmp<-split(data,data[,1])
+  res<-data.frame(matrix(data=NA,nrow = 365,ncol = 15))
+  colnames(res)<-as.character(unlist(tmp[[1]][2]))
+    for(i in 1:length(tmp)){
+      for(j in 1:length(tmp[[1]][,1])){
+        res[i,j]<-mean(as.numeric(tmp[[i]][j,4:27]),na.rm=TRUE)
+      }
+    }
+  return(res)
+}
+
+
+databindALL<-function(tmp,patient_year){
+  
+  mean<-data.frame(apply(tmp,1,function(x){mean(x,na.rm=TRUE)}))
+  obs<-cbind(patient_year$date,patient_year$wday,
+             mean)
+  colnames(obs)<-c("date","wday","Mean")
+  return(obs)
+}
+
+#######################################################
+CO_alldata_mean<-cal_mean(CO_clean)
+SO2_alldata_mean<-cal_mean(SO2_clean)
+O3_alldata_mean<-cal_mean(O3_clean)
+PM2.5_alldata_mean<-cal_mean(PM2.5_clean)
+PM10_alldata_mean<-cal_mean(PM10_clean)
+NO_alldata_mean<-cal_mean(NO_clean)
+NO2_alldata_mean<-cal_mean(NO2_clean)
+
+
+COalldata<-databindALL(CO_alldata_mean[,c(-8,-9,-14)])
+SO2alldata<-databindALL(SO2_alldata_mean[,c(-8,-9,-14)])
+O3alldata<-databindALL(O3_alldata_mean[,c(-8,-9,-14)])
+PM2.5alldata<-databindALL(PM2.5_alldata_mean[,c(-8,-9,-14)])
+PM10alldata<-databindALL(PM10_alldata_mean[,c(-8,-9,-14)])
+NOalldata<-databindALL(NO_alldata_mean[,c(-8,-9,-14)])
+NO2alldata<-databindALL(NO2_alldata_mean[,c(-8,-9,-14)])
+##
+RAIN_alldata_mean<-cal_mean(RAIN_clean)
+TEMP_alldata_mean<-cal_mean(TEMP_clean)
+RH_alldata_mean<-cal_mean(RH_clean)
+WIND_alldata_mean<-cal_mean(WIND_clean)
+WS_HR_alldata_mean<-cal_mean(WS_HR_clean)
+
+RAINalldata<-databindALL(RAIN_alldata_mean[,c(-8,-9,-14)])
+TEMPalldata<-databindALL(TEMP_alldata_mean[,c(-8,-9,-14)])
+RHalldata<-databindALL(RH_alldata_mean[,c(-8,-9,-14)])
+WINDalldata<-databindALL(WIND_alldata_mean[,c(-8,-9,-14)])
+WS_HRalldata<-databindALL(WS_HR_alldata_mean[,c(-8,-9,-14)])
+
 #######################################################
 ptm <- proc.time()
 
@@ -207,8 +240,42 @@ write.csv(NO2_databind,"NO2_databind.csv",fileEncoding = "utf-8",
           row.names=FALSE)
 write.csv(NO_databind,"NO_databind.csv",fileEncoding = "utf-8",
           row.names=FALSE)
-#SO2
 #######################################################
+ptm <- proc.time()
+
+RAIN_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("RAINFALL"))
+TEMP_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("AMB_TEMP"))
+RH_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("RH"))
+WIND_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("WIND_SPEED"))
+WS_HR_data<-loaddata(path="E:/碩二上/空汙/106年 高屏空品區",confound=c("WS_HR"))
+proc.time() - ptm
+
+ptm <- proc.time()
+RAIN_data_cleaned<-dataclean(RAIN_data)
+TEMP_data_cleaned<-dataclean(TEMP_data)
+RH_data_cleaned<-dataclean(RH_data)
+WIND_data_cleaned<-dataclean(WIND_data)
+WS_HR_data_cleaned<-dataclean(WS_HR_data)
+  
+RAIN_clean<-clean_NAdata(RAIN_data_cleaned,0)
+TEMP_clean<-clean_data(TEMP_data_cleaned,0)
+RH_clean<-clean_data(RH_data_cleaned,0)
+WIND_clean<-clean_data(WIND_data_cleaned,0)
+WS_HR_clean<-clean_data(WS_HR_data_cleaned,0)
+
+RAIN_data_cleaned_stat1<-RAIN_clean[RAIN_clean$X2 %in% "左營",]
+TEMP_data_cleaned_stat1<-TEMP_clean[TEMP_clean$X2 %in% "左營",]
+RH_data_cleaned_stat1<-RH_clean[RH_clean$X2 %in% "左營",]
+
+RAIN_databind<-databind(RAIN_data_cleaned_stat1)
+TEMP_databind<-databind(TEMP_data_cleaned_stat1)
+RH_databind<-databind(RH_data_cleaned_stat1)
+
+
+
+proc.time() - ptm
+
+##########################################
 
 ##########################################
 par(mfrow = c(1, 2))

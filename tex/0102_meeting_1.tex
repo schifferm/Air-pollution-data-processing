@@ -1,0 +1,169 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{xeCJK}
+    \setCJKmainfont[AutoFakeBold=1,AutoFakeSlant=.4]{標楷體}
+    \XeTeXlinebreaklocale "zh"
+    \XeTeXlinebreakskip = 0pt plus 1pt
+\usepackage{fontspec}
+    \setmainfont{Times New Roman}
+\usepackage{setspace}
+    \onehalfspace
+    \setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\parindent=0pt
+\def\Large{\fontsize{16}{24}\selectfont}
+\def\large{\fontsize{14}{20}\selectfont}
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\Large\bfseries}}
+\renewcommand\subsection{\@startsection {subsection}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\centering\normalfont\large\bfseries}}
+\makeatother
+\begin{document}
+
+\section*{CO ,lag and moving average data}
+smooth terms P-value
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & V2 & V3 & V4 & V5 & V6 & V7 \\
+  \hline
+1 & 0.5207 & 0.5997 & 0.8659 & 0.8711 & 0.2691 & 0.4388 & 0.4090 \\
+  2 & 0.5447 & 0.7499 & 0.8109 & 0.8832 & 0.9409 & 0.7640 & 0.5261 \\
+  3 & 0.0640 & 0.1520 & 0.7319 & 0.1052 & 0.7090 & 0.7040 & 0.6483 \\
+  4 & 0.3638 & 0.9731 & 0.5702 & 0.2421 & 0.4339 & 0.4435 & 0.4573 \\
+  5 & 0.9941 & 0.9343 & 0.7058 & 0.9350 & 0.6226 & 0.7327 & 0.0678 \\
+  6 & 0.4609 & 0.7270 & 0.6729 & 0.9252 & 0.6129 & 0.6259 & 0.3718 \\
+  7 & 0.0654 & 0.4874 & 0.8689 & 0.4638 & 0.8071 & 0.4046 & 0.2423 \\
+  8 & 0.1719 & 0.3791 & 0.9560 & 0.6191 & 0.9915 & 0.9755 & 0.9236 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\section*{SO2,lag and moving average data}
+smooth terms P-value
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & V2 & V3 & V4 & V5 & V6 & V7 \\
+  \hline
+1 & 0.5840 & 0.2514 & 0.7484 & 0.4602 & 0.2513 & 0.4425 & 0.5456 \\
+  2 & 0.7127 & 0.4819 & 0.3279 & 0.6158 & 0.3939 & 0.5613 & 0.3784 \\
+  3 & 0.4581 & 0.6070 & 0.9145 & 0.3976 & 0.6143 & 0.7935 & 0.6196 \\
+  4 & 0.6101 & 0.8574 & 0.7908 & 0.9095 & 0.8379 & 0.7918 & 0.7571 \\
+  5 & 0.3465 & 0.6868 & 0.9348 & 0.9809 & 0.9493 & 0.9031 & 0.6129 \\
+  6 & 0.9797 & 0.4226 & 0.9649 & 0.9144 & 0.8544 & 0.8307 & 0.6961 \\
+  7 & 0.6179 & 0.5815 & 0.9064 & 0.2209 & 0.5454 & 0.5026 & 0.9512 \\
+  8 & 0.9776 & 0.8545 & 0.9870 & 0.4950 & 0.6572 & 0.9102 & 0.5369 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\section*{O3,lag and moving average data}
+smooth terms P-value
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & V2 & V3 & V4 & V5 & V6 & V7 \\
+  \hline
+1 & 0.5129 & 0.0932 & 0.7297 & 0.6473 & 0.6839 & 0.5946 & 0.7631 \\
+  2 & 0.5261 & 0.5234 & 0.6269 & 0.5877 & 0.7687 & 0.5781 & 0.7973 \\
+  3 & 0.3048 & 0.8401 & 0.8913 & 0.6897 & 0.8337 & 0.7347 & 0.8433 \\
+  4 & 0.4534 & 0.7483 & 0.6079 & 0.7379 & 0.7456 & 0.7773 & 0.6989 \\
+  5 & 0.6511 & 0.6410 & 0.9529 & 0.7649 & 0.9314 & 0.5428 & 0.6509 \\
+  6 & 0.9551 & 0.3218 & 0.9250 & 0.7249 & 0.8198 & 0.4372 & 0.9278 \\
+  7 & 0.3863 & 0.8056 & 0.9543 & 0.7270 & 0.9219 & 0.8954 & 0.7641 \\
+  8 & 0.6861 & 0.7025 & 0.8011 & 0.9229 & 0.9572 & 0.9866 & 0.8537 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\section*{PM2.5 ,lag and moving average data}
+smooth terms P-value
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & V2 & V3 & V4 & V5 & V6 & V7 \\
+  \hline
+1 & 0.4976 & 0.9113 & 0.2616 & 0.8042 & 0.6834 & 0.3191 & 0.3595 \\
+  2 & 0.5590 & 0.7551 & 0.7564 & 0.1133 & 0.5917 & 0.5039 & 0.3030 \\
+  3 & 0.7668 & 0.5587 & 0.1208 & 0.8303 & 0.2284 & 0.1257 & 0.2363 \\
+  4 & 0.2756 & 0.1723 & 0.4242 & 0.6886 & 0.8739 & 0.5950 & 0.3605 \\
+  5 & 0.5199 & 0.8503 & 0.7611 & 0.6495 & 0.9171 & 0.9356 & 0.7011 \\
+  6 & 0.6964 & 0.5532 & 0.9542 & 0.9769 & 0.8020 & 0.9336 & 0.7863 \\
+  7 & 0.5912 & 0.8749 & 0.6809 & 0.6116 & 0.7903 & 0.8658 & 0.9871 \\
+  8 & 0.8216 & 0.5626 & 0.9658 & 1.0000 & 0.7709 & 0.9560 & 0.9585 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\section*{ PM10,lag and moving average data}
+smooth terms P-value
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & V2 & V3 & V4 & V5 & V6 & V7 \\
+  \hline
+1 & 0.9105 & 0.9419 & 0.9295 & 0.5270 & 0.5157 & 0.5616 & 0.4605 \\
+  2 & 0.1572 & 0.5524 & 0.8587 & 0.6306 & 0.4443 & 0.4069 & 0.3140 \\
+  3 & 0.5457 & 0.2840 & 0.2501 & 0.6294 & 0.7994 & 0.5873 & 0.5617 \\
+  4 & 0.6045 & 0.7590 & 0.5825 & 0.4100 & 0.5609 & 0.6568 & 0.6248 \\
+  5 & 0.9013 & 0.8019 & 0.9023 & 0.7375 & 0.5916 & 0.6750 & 0.7499 \\
+  6 & 0.8395 & 0.4086 & 0.4680 & 0.9293 & 0.7324 & 0.4949 & 0.8144 \\
+  7 & 0.5959 & 0.7822 & 0.9013 & 0.2889 & 0.5876 & 0.3332 & 0.2547 \\
+  8 & 0.8309 & 0.9972 & 0.9366 & 0.9952 & 0.8270 & 0.9297 & 0.8605 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\section*{ NO2,lag and moving average data}
+smooth terms P-value
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & V2 & V3 & V4 & V5 & V6 & V7 \\
+  \hline
+1 & 0.4161 & 0.7318 & 0.9113 & 0.6907 & 0.7852 & 0.6115 & 0.5569 \\
+  2 & 0.4116 & 0.5222 & 0.3945 & 0.4643 & 0.7122 & 0.5425 & 0.6587 \\
+  3 & 0.6040 & 0.1535 & 0.4346 & 0.7060 & 0.7623 & 0.7703 & 0.5407 \\
+  4 & 0.5292 & 0.8290 & 0.7084 & 0.8341 & 0.4184 & 0.4770 & 0.6188 \\
+  5 & 0.8409 & 0.1238 & 0.2340 & 0.5266 & 0.3503 & 0.4689 & 0.4283 \\
+  6 & 0.7267 & 0.7603 & 0.5956 & 0.1796 & 0.4747 & 0.6095 & 0.5485 \\
+  7 & 0.0871 & 0.0573 & 0.4239 & 0.4196 & 0.5794 & 0.5076 & 0.6297 \\
+  8 & 0.9587 & 0.7372 & 0.5346 & 0.9618 & 0.8121 & 0.8618 & 0.8713 \\
+   \hline
+\end{tabular}
+\end{table}
+\clearpage
+\section*{NO ,lag and moving average data}
+smooth terms P-value
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & s.pv & V2 & V3 & V4 & V5 & V6 & V7 \\
+  \hline
+1 & 0.7921 & 0.3409 & 0.4758 & 0.1095 & 0.0377 & 0.2964 & 0.4627 \\
+  2 & 0.1216 & 0.7961 & 0.9922 & 0.7716 & 0.6759 & 0.2302 & 0.1704 \\
+  3 & 0.1478 & 0.8721 & 0.3839 & 0.5894 & 0.5644 & 0.7171 & 0.3031 \\
+  4 & 0.4540 & 0.8098 & 0.9012 & 0.4475 & 0.7946 & 0.3825 & 0.3635 \\
+  5 & 0.2377 & 0.2817 & 0.7803 & 0.7265 & 0.5553 & 0.8554 & 0.7187 \\
+  6 & 0.9279 & 0.5677 & 0.7742 & 0.6465 & 0.8600 & 0.4153 & 0.8091 \\
+  7 & 0.3692 & 0.9159 & 0.9389 & 0.4583 & 0.6901 & 0.3816 & 0.8626 \\
+  8 & 0.3880 & 0.8923 & 0.7534 & 0.9406 & 0.6611 & 0.9642 & 0.5207 \\
+   \hline
+\end{tabular}
+\end{table}
+
+\end{document} 
