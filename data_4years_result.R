@@ -1,6 +1,7 @@
 library(mgcv)
 library(xtable)
 
+
 airdata<-data_4years$O3
 mvdata<-function(airdata){
   x=ts(airdata)
@@ -270,6 +271,137 @@ aircol<- c(6:12)
 data<-lag0_daily
 covcol<-c(13:16)
 
+lag_glm<-function(patientcol,aircol,data,covcol){
+  result<-NULL
+  res<-NULL
+  p<-names(data)[patientcol]
+  air<-names(data)[aircol]
+  z1<-data.frame()
+  zz1<-data.frame()
+  formula0<-list()
+  for (j in 1:length(air)){
+    formula0[[j]]<-paste(p,"~",air[[j]],'+as.factor(wday)+as.numeric(TEMP)+as.numeric(RH)+as.numeric(yday)+as.numeric(WS_HR)+as.numeric(RAIN)',sep="")
+  }
+  for(k in 1:length(formula0)){  
+    res[[k]]<-gam(formula(formula0[[k]]),data = data,family = "poisson",method="REML",select=TRUE)
+    result<-summary(res[[k]])
+    z1[k,1]<-round(result$p.pv[2],5)
+    z1[k,2]<-round(result$p.coeff[2],5)
+    z1[k,3]<-round(result$p.pv[3],5)
+    z1[k,4]<-round(result$p.pv[4],5)
+    z1[k,5]<-round(result$p.pv[5],5)
+    z1[k,6]<-round(result$p.pv[6],5)
+    z1[k,7]<-round(result$p.pv[7],5)
+    beta<-coef(res[[k]])
+    Vb <- vcov(res[[k]], unconditional = TRUE)
+    se <- sqrt(diag(Vb))
+    i <- names(beta)[2]
+    zz1[k,1]<-round(exp(res[[k]]$coefficients[[2]]),4)
+    zz1[k,2]<-round(exp(beta[i] + (c(-1,1) * (2 * se[i])))[1],4)
+    zz1[k,3]<-round(exp(beta[i] + (c(-1,1) * (2 * se[i])))[2],4)
+  }
+  colnames(z1)<-c("air_p.pv","air_coeff","TEMP","RH","day","WS_HR","RAIN")
+  row.names(z1)<-names(data)[aircol]
+  row.names(zz1)<-names(data)[aircol]
+  return(list(z1,zz1))
+}
+zz1<-data.frame()
+res[[1]]<-resglm
+beta<-coef(res[[1]])
+Vb <- vcov(res[[1]], unconditional = TRUE)
+se <- sqrt(diag(Vb))
+i <- names(beta)[2]
+zz1[1,1]<-exp(res[[1]]$coefficients[[2]])
+zz1[1,2]<-exp(beta[i] + (c(-1,1) * (2 * se[i])))[1]
+zz1[1,3]<-exp(beta[i] + (c(-1,1) * (2 * se[i])))[2]
+
+r<-list()
+r[[1]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag0_daily[which(lag0_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r[[2]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag1_daily[which(lag1_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r[[3]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag2_daily[which(lag2_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r[[4]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag3_daily[which(lag3_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r[[5]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag4_daily[which(lag4_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r[[6]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag5_daily[which(lag5_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r[[7]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag6_daily[which(lag6_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r[[8]]<-lag_glm(patientcol = 3,aircol = c(6:12),data = lag7_daily[which(lag7_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+
+rr<-data.frame(r[[1]][1],r[[2]][1],r[[3]][1],r[[4]][1],
+               r[[5]][1],r[[6]][1],r[[7]][1],r[[8]][1])
+
+res_urticaria_glm<-list()
+for(i in 1:7){
+  res_urticaria_glm[[i]]<-matrix(data = rr[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+}
+
+rrr<-data.frame(r[[1]][2],r[[2]][2],r[[3]][2],r[[4]][2],
+                r[[5]][2],r[[6]][2],r[[7]][2],r[[8]][2])
+
+res_urticaria_glm_rr<-list()
+for(i in 1:7){
+  res_urticaria_glm_rr[[i]]<-matrix(data = rrr[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+}
+
+names(res_urticaria_glm_rr)<-row.names(rr)
+names(res_urticaria_glm)<-row.names(rr)
+res_urticaria_glm
+res_urticaria_glm_rr
+
+
+r0<-list()
+r0[[1]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag0_daily[which(lag0_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r0[[2]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag1_daily[which(lag1_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r0[[3]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag2_daily[which(lag2_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r0[[4]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag3_daily[which(lag3_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r0[[5]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag4_daily[which(lag4_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r0[[6]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag5_daily[which(lag5_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r0[[7]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag6_daily[which(lag6_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+r0[[8]]<-lag_glm(patientcol = 4,aircol = c(6:12),data = lag7_daily[which(lag7_daily$date<as.Date("2018-01-01")),],covcol = c(13:16))
+
+rr0<-data.frame(r0[[1]][1],r0[[2]][1],r0[[3]][1],r0[[4]][1],
+                r0[[5]][1],r0[[6]][1],r0[[7]][1],r0[[8]][1])
+res_allergy_glm<-list()
+for(i in 1:7){
+  res_allergy_glm[[i]]<-matrix(data = rr0[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+}
+
+rrr0<-data.frame(r0[[1]][2],r0[[2]][2],r0[[3]][2],r0[[4]][2],
+                 r0[[5]][2],r0[[6]][2],r0[[7]][2],r0[[8]][2])
+
+res_allergy_glm_rr<-list()
+for(i in 1:7){
+  res_allergy_glm_rr[[i]]<-matrix(data = rrr0[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+}
+
+names(res_allergy_glm_rr)<-row.names(rr0)
+
+
+names(res_allergy_glm)<-row.names(rr0)
+res_allergy_glm
+res_allergy_glm_rr
+p<-colnames(lag0_daily)[4]
+air<-colnames(lag0_daily)[4]
+
+p<-colnames(lag0_daily)[4]
+glmdata<-lag2_daily
+formulaglm<-paste(p,"~",air,'+as.factor(wday)+as.numeric(TEMP)+as.numeric(RH)+as.numeric(yday)+as.numeric(WS_HR)+as.numeric(RAIN)',sep="")
+resglm<-gam(formula(formulaglm),data = glmdata,family = "poisson",method="REML",select=TRUE)
+ressglm<-summary(resglm)
+coef(resglm)
+
+beta<-coef(resglm)
+Vb <- vcov(resglm, unconditional = TRUE)
+se <- sqrt(diag(Vb))
+i <- which(names(beta) == "CO")
+exp(beta[i] + (c(-1,1) * (2 * se[i])))
+exp(resglm[[1]][[2]])
+
+
+formulagam<-paste(p,"~",air,"+as.factor(wday)",'+s(as.numeric(TEMP),bs="cs",sp=3,k=4)+s(as.numeric(RH),bs="cs",sp=4,k=4)+s(as.numeric(yday),bs="cs",sp=4,k=4)+s(as.numeric(WS_HR),bs="cs",sp=4,k=4)+s(as.numeric(RAIN),bs="cs",sp=4,k=4)',sep="")
+resgam<-gam(formula(formulagam),data = glmdata,family = "poisson",method="REML",select=TRUE)
+ressgam<-summary(resgam)
+
+
+
 lag_gam<-function(patientcol,aircol,data,covcol){
   result<-NULL
   res<-NULL
@@ -304,6 +436,7 @@ lag_gam<-function(patientcol,aircol,data,covcol){
   air<-names(data)[aircol]
   z1<-data.frame()
   z2<-data.frame()
+  zz1<-data.frame()
   formula0<-list()
   for (j in 1:length(air)){
     formula0[[j]]<-paste(p,"~",air[[j]],"+as.factor(wday)",'+s(as.numeric(TEMP),bs="cs",sp=3,k=4)+s(as.numeric(RH),bs="cs",sp=4,k=4)+s(as.numeric(yday),bs="cs",sp=4,k=4)+s(as.numeric(WS_HR),bs="cs",sp=4,k=4)+s(as.numeric(RAIN),bs="cs",sp=4,k=4)',sep="")
@@ -328,13 +461,21 @@ lag_gam<-function(patientcol,aircol,data,covcol){
     z2[k,8]<-round(result$p.coeff[5],5)
     z2[k,9]<-round(result$p.pv[6],5)
     z2[k,10]<-round(result$p.coeff[6],5)
+    beta<-coef(res[[k]])
+    Vb <- vcov(res[[k]], unconditional = TRUE)
+    se <- sqrt(diag(Vb))
+    i <- names(beta)[2]
+    zz1[k,1]<-round(exp(res[[k]]$coefficients[[2]]),4)
+    zz1[k,2]<-round(exp(beta[i] + (c(-1,1) * (2 * se[i])))[1],4)
+    zz1[k,3]<-round(exp(beta[i] + (c(-1,1) * (2 * se[i])))[2],4)
   }
 
   colnames(z1)<-c("air_p.pv","air_coeff","TEMP","RH","day","WS_HR","RAIN")
   row.names(z1)<-names(data)[aircol]
   colnames(z2)<-c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")
   row.names(z1)<-names(data)[aircol]
-  return(list(z1,z2))
+  row.names(zz1)<-names(data)[aircol]
+  return(list(z1,z2,zz1))
 }
 
 a<-list()
@@ -370,10 +511,21 @@ for(i in 1:7){
   
 }
 
+aaaa<-data.frame(a[[1]][3],a[[2]][3],a[[3]][3],a[[4]][3],
+                 a[[5]][3],a[[6]][3],a[[7]][3],a[[8]][3])
+res_allergy_rr<-list()
+for(i in 1:7){
+  res_allergy_rr[[i]]<-matrix(data = aaaa[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_allergy_rr)<-row.names(aa)
+res_allergy_rr
+
 
 rownames(aa)
 names(res_allergy)<-row.names(aa)
 names(res_allergy_week)<-row.names(aa)
+
 res_allergy
 res_allergy_week
 
@@ -407,6 +559,17 @@ for(i in 1:7){
   res_urticaria_week[[i]]<-matrix(data = bbb[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
   
 }
+
+bbbb<-data.frame(b[[1]][3],b[[2]][3],b[[3]][3],b[[4]][3],
+                 b[[5]][3],b[[6]][3],b[[7]][3],b[[8]][3])
+res_urticaria_rr<-list()
+for(i in 1:7){
+  res_urticaria_rr[[i]]<-matrix(data = bbbb[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_urticaria_rr)<-row.names(bb)
+res_urticaria_rr
+
 names(res_urticaria)<-rownames(bb)
 names(res_urticaria_week)<-rownames(bb)
 res_urticaria
@@ -436,6 +599,16 @@ for(i in 1:7){
   res_urticaria_M_week[[i]]<-matrix(data = ccc[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
 
+cccc<-data.frame(c[[1]][3],c[[2]][3],c[[3]][3],c[[4]][3],
+                 c[[5]][3],c[[6]][3],c[[7]][3],c[[8]][3])
+res_urticaria_M_rr<-list()
+for(i in 1:7){
+  res_urticaria_M_rr[[i]]<-matrix(data = cccc[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_urticaria_M_rr)<-row.names(cc)
+res_urticaria_M_rr
+
 names(res_urticaria_M)<-row.names(cc)
 names(res_urticaria_M_week)<-row.names(cc)
 res_urticaria_M
@@ -464,6 +637,16 @@ res_urticaria_F_week<-list()
 for(i in 1:7){
   res_urticaria_F_week[[i]]<-matrix(data = ddd[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
+
+dddd<-data.frame(d[[1]][3],d[[2]][3],d[[3]][3],d[[4]][3],
+                 d[[5]][3],d[[6]][3],d[[7]][3],d[[8]][3])
+res_urticaria_F_rr<-list()
+for(i in 1:7){
+  res_urticaria_F_rr[[i]]<-matrix(data = dddd[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_urticaria_F_rr)<-row.names(dd)
+res_urticaria_F_rr
 
 names(res_urticaria_F)<-row.names(dd)
 names(res_urticaria_F_week)<-row.names(dd)
@@ -495,6 +678,16 @@ for(i in 1:7){
   res_allergy_M_week[[i]]<-matrix(data = eee[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
 
+eeee<-data.frame(e[[1]][3],e[[2]][3],e[[3]][3],e[[4]][3],
+                 e[[5]][3],e[[6]][3],e[[7]][3],e[[8]][3])
+res_allergy_M_rr<-list()
+for(i in 1:7){
+  res_allergy_M_rr[[i]]<-matrix(data = eeee[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_allergy_M_rr)<-row.names(ee)
+res_allergy_M_rr
+
 names(res_allergy_M)<-row.names(ee)
 names(res_allergy_M_week)<-row.names(ee)
 res_allergy_M
@@ -522,6 +715,15 @@ res_allergy_F_week<-list()
 for(i in 1:7){
   res_allergy_F_week[[i]]<-matrix(data = fff[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
+
+ffff<-data.frame(f[[1]][3],f[[2]][3],f[[3]][3],f[[4]][3],
+                 f[[5]][3],f[[6]][3],f[[7]][3],f[[8]][3])
+res_allergy_F_rr<-list()
+for(i in 1:7){
+  res_allergy_F_rr[[i]]<-matrix(data = ffff[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+}
+names(res_allergy_F_rr)<-row.names(ff)
+res_allergy_F_rr
 
 names(res_allergy_F)<-row.names(ff)
 names(res_allergy_F_week)<-row.names(ff)
@@ -552,6 +754,17 @@ for(i in 1:7){
   res_urticaria_20_week[[i]]<-matrix(data = ggg[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
 
+gggg<-data.frame(g[[1]][3],g[[2]][3],g[[3]][3],g[[4]][3],
+                 g[[5]][3],g[[6]][3],g[[7]][3],g[[8]][3])
+res_urticaria_20_rr<-list()
+for(i in 1:7){
+  res_urticaria_20_rr[[i]]<-matrix(data = gggg[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_urticaria_20_rr)<-row.names(gg)
+res_urticaria_20_rr
+
+
 names(res_urticaria_20)<-row.names(gg)
 names(res_urticaria_20_week)<-row.names(gg)
 res_urticaria_20
@@ -580,6 +793,17 @@ res_urticaria_65_week<-list()
 for(i in 1:7){
   res_urticaria_65_week[[i]]<-matrix(data = hhh[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
+
+hhhh<-data.frame(h[[1]][3],h[[2]][3],h[[3]][3],h[[4]][3],
+                 h[[5]][3],h[[6]][3],h[[7]][3],h[[8]][3])
+res_urticaria_65_rr<-list()
+for(i in 1:7){
+  res_urticaria_65_rr[[i]]<-matrix(data = hhhh[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_urticaria_65_rr)<-row.names(hh)
+res_urticaria_65_rr
+
 
 names(res_urticaria_65)<-row.names(hh)
 names(res_urticaria_65_week)<-row.names(hh)
@@ -610,6 +834,17 @@ for(i in 1:7){
   res_allergy_20_week[[i]]<-matrix(data = iii[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
 
+iiii<-data.frame(i[[1]][3],i[[2]][3],i[[3]][3],i[[4]][3],
+                 i[[5]][3],i[[6]][3],i[[7]][3],i[[8]][3])
+res_allergy_20_rr<-list()
+for(i in 1:7){
+  res_allergy_20_rr[[i]]<-matrix(data = iiii[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_allergy_20_rr)<-row.names(gg)
+res_allergy_20_rr
+
+
 names(res_allergy_20)<-row.names(ii)
 names(res_allergy_20_week)<-row.names(ii)
 res_allergy_20
@@ -638,6 +873,17 @@ res_allergy_65_week<-list()
 for(i in 1:7){
   res_allergy_65_week[[i]]<-matrix(data = jjj[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep="")),c("int_p.pv","int_coeff","2_p.pv","2_coeff","3_p.pv","3_coeff","4_p.pv","4_coeff","5_p.pv","5_coeff")))
 }
+
+jjjj<-data.frame(j[[1]][3],j[[2]][3],j[[3]][3],j[[4]][3],
+                 j[[5]][3],j[[6]][3],j[[7]][3],j[[8]][3])
+res_allergy_65_rr<-list()
+for(i in 1:7){
+  res_allergy_65_rr[[i]]<-matrix(data = jjjj[i,],nrow =8 ,byrow = TRUE,dimnames = list(c(paste("lag",0:7,sep=""))))
+  
+}
+names(res_allergy_65_rr)<-row.names(gg)
+res_allergy_65_rr
+
 
 names(res_allergy_65)<-row.names(jj)
 names(res_allergy_65_week)<-row.names(jj)
@@ -708,3 +954,5 @@ plot(data0$allergy-fitted(res),type = "l")
 predict(res,type = "terms")
 plot(y=predict(res,type = "terms")[,1],x=1:length(predict(res,type = "terms")[,1]), type = "l", xaxt = 'n', yaxt='n', ylab = '', xlab = '',lty = 1, col = "red")
 write.csv(lag0_daily,"lag0_daily.csv",fileEncoding = "utf-8")
+
+weight<-read.csv("final_1.csv")

@@ -147,6 +147,11 @@ plot(x=1:8,y=exp(unlist(res_allergy$PM10[,2])),
 
 plot(x=1:8,y=exp(unlist(res_urticaria$PM10[,2])),
      ylab="Odds ratio",xlab="lag",ylim = c(0.99,1.01))
+
+plot(y=lag0_daily$urticaria,x=lag0_daily$TEMP,
+     ylab="蕁麻疹之每日就診人數",
+     xlab="溫度")
+
 ############CORR
 colnames(lag0_daily)
 corr <- cor.test(x=lag0_daily[,7], y=lag0_daily[,8], method = 'spearman')
@@ -174,3 +179,6 @@ colnames(corr_df)<-colnames(lag0_daily)[6:12]
 rownames(corr_df)<-colnames(lag0_daily)[6:12]
 
 cor.test(x=lag0_daily[,7], y=lag0_daily[,6], method = 'spearman')
+############################
+#exp risk & ci
+
