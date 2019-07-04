@@ -205,21 +205,31 @@ patage<-function(data){
     t<-data
     new_t<-data.frame(date=as.Date(rep(NA,366)),
                     urticaria_20=rep(0,366),
+                    urticaria_30=rep(0,366),
+                    urticaria_50=rep(0,366),
                     urticaria_65=rep(0,366),
                     allergy_20=rep(0,366),
+                    allergy_30=rep(0,366),
+                    allergy_50=rep(0,366),
                     allergy_65=rep(0,366))
     j<-0
     for (i in 1:(dim(t)[1]-1)){
     if(as.numeric(t[i,1])>40000){
       j<-j+1      
       new_t[j,1]<-lubridate::as_date(as.numeric(t[i,1]),origin = "1899-12-30 UTC")
-    }else if(as.numeric(t[i,1])<40000&&as.numeric(t[i,1])>1954){
+    }else if(as.numeric(t[i,1])<40000&&as.numeric(t[i,1])>1984){
       new_t[j,2]<-t[i,2]+new_t[j,2]
-      new_t[j,4]<-t[i,3]+new_t[j,4]
-    }else if(as.numeric(t[i,1])<=1954&&as.numeric(t[i,1])>1900){
+      new_t[j,6]<-t[i,3]+new_t[j,6]
+    }else if(as.numeric(t[i,1])<=1984&&as.numeric(t[i,1])>1969){
       new_t[j,3]<-t[i,2]+new_t[j,3]
-      new_t[j,5]<-t[i,3]+new_t[j,5]
-      }
+      new_t[j,7]<-t[i,3]+new_t[j,7]
+    }else if(as.numeric(t[i,1])<=1969&&as.numeric(t[i,1])>1954){
+      new_t[j,4]<-t[i,2]+new_t[j,4]
+      new_t[j,8]<-t[i,3]+new_t[j,8]
+    }else if(as.numeric(t[i,1])<=1954&&as.numeric(t[i,1])>1900){
+      new_t[j,5]<-t[i,2]+new_t[j,5]
+      new_t[j,9]<-t[i,3]+new_t[j,9]
+    }
   }
   return(new_t)
 }
@@ -251,24 +261,24 @@ date_2018_wday<-data.frame(date=date_2018$date,wday=wday(date_2018$date,week_sta
 ####################################################
 
 #cbind date and patient data
-p103age_w<-merge(date_2014_wday, p103age[,c(1:5)], by.x="date",all.x = TRUE)
-p104age_w<-merge(date_2015_wday, p104age[,c(1:5)], by.x="date",all.x = TRUE)
-p105age_w<-merge(date_2016_wday, p105age[,c(1:5)], by.x="date",all.x = TRUE)
-p106age_w<-merge(date_2017_wday, p106age[,c(1:5)], by.x="date",all.x = TRUE)
+p103age_w<-merge(date_2014_wday, p103age[,c(1:9)], by.x="date",all.x = TRUE)
+p104age_w<-merge(date_2015_wday, p104age[,c(1:9)], by.x="date",all.x = TRUE)
+p105age_w<-merge(date_2016_wday, p105age[,c(1:9)], by.x="date",all.x = TRUE)
+p106age_w<-merge(date_2017_wday, p106age[,c(1:9)], by.x="date",all.x = TRUE)
 ##########################################################
 page4year<-rbind(p103age_w[which(p103age_w$wday!=6 &p103age_w$wday!=7),],
                  p104age_w[which(p104age_w$wday!=6 &p104age_w$wday!=7),],
                  p105age_w[which(p105age_w$wday!=6 &p105age_w$wday!=7),],
                  p106age_w[which(p106age_w$wday!=6 &p106age_w$wday!=7),])
 page4year<-clean_NAdata(page4year,0)
-lag0_daily[,21:24]<-page4year[,3:6]
-lag1_daily[,21:24]<-page4year[-1,3:6]
-lag2_daily[,21:24]<-page4year[-2:-1,3:6]
-lag3_daily[,21:24]<-page4year[-3:-1,3:6]
-lag4_daily[,21:24]<-page4year[-3:-1,3:6]
-lag5_daily[,21:24]<-page4year[-3:-1,3:6]
-lag6_daily[,21:24]<-page4year[-4:-1,3:6]
-lag7_daily[,21:24]<-page4year[-5:-1,3:6]
+lag0_daily[,21:28]<-page4year[,3:10]
+lag1_daily[,21:28]<-page4year[-1,3:10]
+lag2_daily[,21:28]<-page4year[-2:-1,3:10]
+lag3_daily[,21:28]<-page4year[-3:-1,3:10]
+lag4_daily[,21:28]<-page4year[-3:-1,3:10]
+lag5_daily[,21:28]<-page4year[-3:-1,3:10]
+lag6_daily[,21:28]<-page4year[-4:-1,3:10]
+lag7_daily[,21:28]<-page4year[-5:-1,3:10]
 #air data by state
 #SO2
 SO2_4years<-rbind(SO2_103_mean,

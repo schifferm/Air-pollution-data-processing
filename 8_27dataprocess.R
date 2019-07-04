@@ -1,5 +1,6 @@
- #E:/碩二上/空汙/106年 高屏空品區
+#E:/碩二上/空汙/106年 高屏空品區
 library(readxl)
+library(xlsx)
 library(data.table)
 setwd("E:/碩二上/空汙/106年 高屏空品區")
 path<-("E:/碩二上/空汙/106年 高屏空品區")

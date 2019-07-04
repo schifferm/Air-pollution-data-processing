@@ -2,6 +2,7 @@ library(mgcv)
 library(xtable)
 library(car)
 library(dplyr)
+#
 rrcul<-function(summ){
 beta<-coef(summ)
 Vb <- vcov(summ, unconditional = TRUE)

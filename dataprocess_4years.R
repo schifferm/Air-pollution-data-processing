@@ -495,7 +495,7 @@ data_2017$RAIN[which(data_2017$RAIN=="NaN")]<-0
 data_2018$RAIN[which(data_2018$RAIN=="NaN")]<-0
 
 data_4years<-rbind(data_2014,data_2015,data_2016,data_2017,data_2018)
-
+data_4years<-rbind(data_2014,data_2015,data_2016,data_2017)
 write.csv(data_4years,"data_4years.csv",fileEncoding = "utf-8")
 
 lag_day<-data.frame(lag1=data_4years$date+1,
